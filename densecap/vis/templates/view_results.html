@@ -15,11 +15,14 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='jstree/themes/default/style.min.css') }}">
     <!-- <link rel="stylesheet" type="text/css" href="http://weaver.nlplab.org/~brat/demo/v1.3/style-vis.css"> -->
     <script type="application/javascript">
-    var BOX_WIDTH = 8;
+    var BOX_WIDTH = 3;
     
     var INPUT_JSON_PATH = 'data/results.json'
+    var selected_snippet = null; //set when users click on a node
     var snippet_list = null; // loaded from snippets.json
     var input_struct = null; // will be loaded from json
+    var image_size = null; // loaded from results.json
+    var image_ratio = null; // calculated after loading image and results.json
     var current_id = 0; // currently shown image id
 
     // render flags utils
@@ -58,16 +61,57 @@
         $('#movie_snippets').jstree();
       });
 
-      // $.getJSON(input_json_path, function(data) {
-      //   input_struct = data; // store in global
-      //   renderImage();
-      // });
+      
     }
 
     function renderSnippets() {
       for (var i = 0; i < snippet_list.length; i++) {
-        $('#movie_snippets ul').append('<li>' + snippet_list[i] + '</li>');
+        $('#movie_snippets ul').append('<li id="snippet' + i + '">' + snippet_list[i] + '</li>');
       }
+
+      $('#movie_snippets').on('select_node.jstree', function (e, data) {
+        selected_snippet = data.instance.get_node(data.selected).text;
+        var result_json_path = '/static/processed/' + selected_snippet + '/results.json';
+
+        $.getJSON(result_json_path, function(data) {
+          input_struct = data; // store in global
+          image_size = data.opt.image_size;
+
+          // Sort the input according to names 
+          input_struct.results.sort(function (a, b) {
+            var a_frame = parseInt(a.img_name.substring(0, a.img_name.length - 4));
+            var b_frame = parseInt(b.img_name.substring(0, b.img_name.length - 4));
+
+            if (a_frame < b_frame) return -1;
+            if (a_frame > b_frame) return 1;
+            return 0;
+          });
+
+          // for (var i = 0 ; i < input_struct.results.length  ; i ++ ) {
+          //   var result = input_struct.results[i];
+          //   var new_result = [];
+
+          //   for (var j = 0 ; j < result.captions.length ; j ++ ) {
+          //     var r = {'score' : result.scores[j], 
+          //              'caption' : result.captions[j],
+          //              'box': result.boxes[j]};
+          //     new_result.push(r);
+          //   }
+
+          //   new_result.sort(function (a, b) {
+          //     if (a.score < b.score ) return -1;
+          //     if (a.score > b.score ) return 1;
+          //     return 0;
+          //   });
+
+          //   input_struct.results[i] = new_result;
+          // }
+
+          renderImage();
+        });
+
+
+      });
     }
 
     function updateImg(d) {
@@ -78,10 +122,11 @@
 
     var svgg = null; // g element inside svg that contains the annotations
     var desc_div = null; // element to render captions into
+    
     function renderImage() {
-      var image_path = '/static/data/' + input_struct.results[current_id].img_name;
+      var image_path = '/static/processed/' + selected_snippet + '/' + input_struct.results[current_id].img_name;
       var fname = image_path;
-      console.log('loading image: ' + fname);
+      //console.log('loading image: ' + fname);
 
       $("#counterdiv").html('image ' + (current_id+1) + '/' + input_struct.results.length);
 
@@ -97,6 +142,8 @@
       img.onload = function() {
         var width = this.width;
         var height = this.height;
+
+        image_ratio = width / image_size;
 
         // create main rendering elements
         var svg = div.append("svg");
@@ -135,13 +182,16 @@
       var nshow = Math.min(render_flags.detections_to_show, result.captions.length);
       for (var k = 0; k < nshow; k++) {
         var i = ixscore[k][0];
-        var det_box = result.boxes[i];
+        //console.log(i);
+        //console.log(ixscore[k][1]);
+        var det_box = [0,0,0,0];
+        for ( var l = 0 ; l < 4 ; l ++ ) det_box[l] = result.boxes[i][l] * image_ratio;
         var caption = result.captions[i];
         // render box
         var color = WAD_COLORS[k % WAD_COLORS.length];
         renderBox(elt, det_box, color, BOX_WIDTH, render_flags.captions_inline ? caption : '');
         // render caption in a separate div below the image
-        delt.append('span').classed('ddesc', true).style('color', color).html(escapeHtml(caption) + '. ');
+        delt.append('span').classed('ddesc', true).style('color', color).html(escapeHtml(caption) + ' . ' + result.scores[i]);
       }
     }
 
@@ -181,7 +231,7 @@
 	      <hr>
 
 	      
-	      <div id="slider"></div>
+	      
 	      <div id="image_vis"></div>
 	      
 	      <div id="image_vis_controls">
@@ -198,3 +248,4 @@
     </div>
   </body>
 </html>
+
