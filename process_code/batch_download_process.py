@@ -178,29 +178,32 @@ cgg_model:
 def process ( device, cgg_model, sample_ratio, feature_directory, downloaded_queue, processed_queue ):
 	try:
 		while True:
-			path = downloaded_queue.get(block = True, timeout = 30)
+			try:
+				path = downloaded_queue.get(block = True, timeout = 30)
 
-			# Get filename from path
-			fn = path.rsplit(os.path.sep)[-1]
+				# Get filename from path
+				fn = path.rsplit(os.path.sep)[-1]
 
-			fv_filename = fn[:fn.rfind('.')] + '.fv' 
+				fv_filename = fn[:fn.rfind('.')] + '.fv' 
 
-			# Make output feature path
-			output_path = os.path.join(feature_directory, fv_filename)
+				# Make output feature path
+				output_path = os.path.join(feature_directory, fv_filename)
 
-			t = time.time()
-			sequence_features = get_features_from_path ( device, cgg_model, sample_ratio, path )
+				t = time.time()
+				sequence_features = get_features_from_path ( device, cgg_model, sample_ratio, path )
 
-			if sequence_features != None:
-				np.save(output_path, sequence_features)
+				if sequence_features != None:
+					np.save(output_path, sequence_features)
 
-				processed_queue.put(path, block = True, timeout = None)
+					processed_queue.put(path, block = True, timeout = None)
 
-				processed_time = time.time() - t
+					processed_time = time.time() - t
 
-				processed_time_per_frame = processed_time / sequence_features.shape[0]
+					processed_time_per_frame = processed_time / sequence_features.shape[0]
 
-				print 'Process from video %s to feature path % s using %.2f seconds, per frame = %.2f seconds' % (path, output_path, processed_time, processed_time_per_frame)
+					print 'Process from video %s to feature path % s using %.2f seconds, per frame = %.2f seconds' % (path, output_path, processed_time, processed_time_per_frame)
+			except cv2.error:
+				print 'CV2 error for %s' % path
 	except TimeoutError, Queue.Empty:
 		print 'Stop processing when there is no more files to process'
 
@@ -213,7 +216,7 @@ def remove_file( processed_queue ):
 		print 'Remove file %s' % path
 
 # Run the following
-# python batch_download_process.py -m ../models/vgg19_weights.h5 -f ../feature_vectors -t ../tmp --from 0 --to 10 -p 4 -r 10 -d /gpu:0 --removetemp
+# python batch_download_process.py -m ../models/vgg19_weights.h5 -f ../feature_vectors -t /media/hdd/tuandn/tmp --from 0 --to 10 -p 4 -r 10 -d /gpu:0 --removetemp
 if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser(description='A script to download and process movie snippets in all training/validating/testing dataset into their appropriate output')
