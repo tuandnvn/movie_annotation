@@ -56,7 +56,6 @@ class ClauseDetector {
 		IndexedConstituent.sentSemanticGraph = clausIE.semanticGraph;
 		List<IndexedWord> roots = new ArrayList<IndexedWord>();
 		for (SemanticGraphEdge edge : clausIE.semanticGraph.edgeIterable()) {
-			System.out.println(edge);
 			// check whether the edge identifies a clause
 			if (DpUtils.isAnySubj(edge)) {
 				// clauses with a subject
@@ -75,9 +74,11 @@ class ClauseDetector {
 				IndexedWord object = edge.getGovernor();
 				addPossessiveClause(clausIE, subject, object);
 				roots.add(null);
-				// isPartMod -> toVerbMod
-				// } else if (clausIE.options.processPartmods && DpUtils.isPartMod(edge)) {
-			} else if (clausIE.options.processPartmods && DpUtils.isVerbMod(edge)) {
+				// isPartMod -> toVerbMod. There is a problem here
+				// such as for the sentence I don’t have anything to say to you
+				// It shouldn't divided the sentence into two clauses.
+			} else if (clausIE.options.processPartmods && DpUtils.isPartMod(edge)) {
+				// } else if (clausIE.options.processPartmods && DpUtils.isVerbMod(edge)) {
 				// clauses for participial modifiers
 				IndexedWord subject = edge.getGovernor();
 				IndexedWord object = edge.getDependent();
@@ -341,9 +342,11 @@ class ClauseDetector {
 					clause.acomps.add(clause.constituents.size());
 					clause.constituents.add(new IndexedConstituent(semanticGraph, dependent, Constituent.Type.ACOMP));
 					// Various Adverbials
+
+					// Remove isPurpcl
 				} else if ((DpUtils.isAnyPrep(outgoingEdge) || DpUtils.isPobj(outgoingEdge)
 						|| DpUtils.isTmod(outgoingEdge) || DpUtils.isAdvcl(outgoingEdge)
-						|| DpUtils.isNpadvmod(outgoingEdge) || DpUtils.isPurpcl(outgoingEdge))
+						|| DpUtils.isNpadvmod(outgoingEdge))
 
 				) {
 					int constint = clause.constituents.size();
@@ -356,8 +359,8 @@ class ClauseDetector {
 					clause.adverbials.add(constint);
 					clause.constituents
 							.add(new IndexedConstituent(semanticGraph, dependent, Constituent.Type.ADVERBIAL));
-					// Partmod -> Verbmod
-				} else if (DpUtils.isVerbMod(outgoingEdge)) {
+				} else if (DpUtils.isPartMod(outgoingEdge)) {
+					// } else if (DpUtils.isVerbMod(outgoingEdge)) {
 					int constint = clause.constituents.size();
 					clause.adverbials.add(constint);
 					clause.constituents

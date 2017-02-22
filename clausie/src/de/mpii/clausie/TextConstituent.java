@@ -25,4 +25,8 @@ public class TextConstituent extends Constituent {
 		return text;
 	}
 
+	@Override
+	public String toString() {
+		return "TextConstituent [text=" + text + "]";
+	}
 }

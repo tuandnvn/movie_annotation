@@ -1,9 +1,19 @@
+This is an adaptation of Clausie 0.0.1 to work with Stanford CoreNLP 3.7.0.
+
+ADAPTATION CONTENTS
+
+* Stanford CoreNLP 3.7.0 by default process text into UniversalEnglishGrammar, needs to change back to EnglishGrammar.
+* Certain relations has been changed, for example, purpose clause has been included by advcl (adverbial clause modifier)
+* Fixing problems with "then" and comma:
+* I drink some coffee, eat a banana -> 1 clause only [3       "I"     "drink" "some coffee"]
+* I drink some coffee then eat a banana -> 1 clause only [3       "I"     "drink" "some coffee"]
+Need to fix that into two clauses
+
 CONTENTS (VERSION 0.0.1)
 
 -data/ : A set of test sentences
--clausie_lib/: A set of libraries used by clausie
--src/: Clausie source code
--clausie.jar: A runnable .jar file
+-src/de: (Adapted) Clausie source code
+-src/tuandn: My code that use Clausie to produce simple representation form for sentences.
 
 LICENSE
 

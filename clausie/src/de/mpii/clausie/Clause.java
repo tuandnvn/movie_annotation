@@ -223,6 +223,10 @@ public class Clause {
 		return toString(null);
 	}
 
+	public List<Constituent> getConstituents() {
+		return constituents;
+	}
+
 	public String toString(Options options) {
 		Clause clause = this;
 		StringBuffer s = new StringBuffer();
@@ -381,5 +385,9 @@ public class Clause {
 			s = constituent.rootString();
 		}
 		return options.dictAdverbsInclude.contains(s);
+	}
+
+	public Type getType() {
+		return type;
 	}
 }

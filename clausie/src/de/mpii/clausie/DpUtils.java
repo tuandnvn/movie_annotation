@@ -69,17 +69,9 @@ public class DpUtils {
 	public static boolean containsRelation(List<SemanticGraphEdge> edges, GrammaticalRelation rel) {
 		return findFirstOfRelation(edges, rel) != null;
 	}
-	
-	public static boolean test(GrammaticalRelation gr1, GrammaticalRelation gr2) {
-		return (gr1.getLanguage().compatibleWith(gr2.getLanguage())) &&
-				gr1.getShortName().equals(gr2.getShortName()) &&
-	             (gr1.getSpecific() == gr2.getSpecific() ||
-	              (gr1.getSpecific() != null && gr1.getSpecific().equals(gr2.getSpecific())));
-	}
-	
+
 	/** Checks if a given edge holds a subject relation */
 	public static boolean isAnySubj(SemanticGraphEdge edge) {
-		test(EnglishGrammaticalRelations.SUBJECT, edge.getRelation().getParent());
 		return EnglishGrammaticalRelations.SUBJECT.isAncestor(edge.getRelation());
 	}
 
@@ -107,6 +99,11 @@ public class DpUtils {
 	// public static boolean isXsubj(SemanticGraphEdge edge) {
 	// return EnglishGrammaticalRelations.CONTROLLING_SUBJECT.equals(edge.getRelation());
 	// }
+
+	// Replacement for isXsubj
+	public static boolean isSemDep(SemanticGraphEdge edge) {
+		return EnglishGrammaticalRelations.SEMANTIC_DEPENDENT.equals(edge.getRelation());
+	}
 
 	/** Checks if a given edge holds an object relation */
 	public static boolean isAnyObj(SemanticGraphEdge edge) {
@@ -148,12 +145,10 @@ public class DpUtils {
 		return EnglishGrammaticalRelations.APPOSITIONAL_MODIFIER.equals(edge.getRelation());
 	}
 
-	/** Checks if a given edge holds an purpose clause modifier relation */
-	public static boolean isPurpcl(SemanticGraphEdge edge) {
-		return EnglishGrammaticalRelations.ADV_CLAUSE_MODIFIER.equals(edge.getRelation());
-		// Previous version
-		// return EnglishGrammaticalRelations.PURPOSE_CLAUSE_MODIFIER.equals(edge.getRelation());
-	}
+	// /** Checks if a given edge holds an purpose clause modifier relation */
+	// public static boolean isPurpcl(SemanticGraphEdge edge) {
+	// return EnglishGrammaticalRelations.PURPOSE_CLAUSE_MODIFIER.equals(edge.getRelation());
+	// }
 
 	/** Checks if a given edge holds a xcomp relation */
 	public static boolean isXcomp(SemanticGraphEdge edge) {
@@ -246,6 +241,11 @@ public class DpUtils {
 		// return EnglishGrammaticalRelations.PARTICIPIAL_MODIFIER.equals(edge.getRelation());
 	}
 
+	public static boolean isPartMod(SemanticGraphEdge edge) {
+		return EnglishGrammaticalRelations.VERBAL_MODIFIER.equals(edge.getRelation())
+				&& (edge.getTarget().tag().equals("VBG") || edge.getTarget().tag().equals("VBN"));
+	}
+
 	/** Checks if a given edge holds a temporal modifier relation */
 	public static boolean isTmod(SemanticGraphEdge edge) {
 		return EnglishGrammaticalRelations.TEMPORAL_MODIFIER.equals(edge.getRelation());
@@ -295,9 +295,10 @@ public class DpUtils {
 	// Based on 2016 version
 	// infmod was remode as a relation. It has been generalized as a case of vmod.
 	/** Checks if a given edge holds an infinitival modifier relation */
-	// public static boolean isInfmod(SemanticGraphEdge edge) {
-	// return EnglishGrammaticalRelations.INFINITIVAL_MODIFIER.equals(edge.getRelation());
-	// }
+	public static boolean isInfmod(SemanticGraphEdge edge) {
+		return EnglishGrammaticalRelations.VERBAL_MODIFIER.equals(edge.getRelation())
+				&& edge.getTarget().tag().equals("VB");
+	}
 
 	/** Checks if a given edge holds a predeterminer relation */
 	public static boolean isPredet(SemanticGraphEdge edge) {
