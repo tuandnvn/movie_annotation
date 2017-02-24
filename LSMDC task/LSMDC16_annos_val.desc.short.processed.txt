@@ -1,0 +1,658 @@
+1	   someone,      walks,       null,       null,       null
+1	        he,      stops,       null,       null,       null
+2	      face,   dripping,       null,       with,      sweat
+3	   someone,      turns,       null,         to,    Marines
+3	   Marines, be hanging,       null,         by,        car
+4	       One,     raises,      drink,         in,      toast
+5	   someone,      takes,        bag,       from,     cooler
+5	   someone,     raises,         it,         in,      reply
+5	        he,      holds,        ice,         to,       knee
+6	    Marine,       ices,       neck,       null,       null
+7	   someone,   holds up,   document,       null,       null
+8	   someone,     signed,    request,       null,       null
+9	    stares,  stoically,       null,       null,       null
+10	   someone,      gazes,       null,         at,        him
+11	      eyes,    flicker,       null,         to,       face
+12	   someone,      gives,        him,       null,       null
+12	        he,       adds,  signature,         to,       form
+13	        He,     closes,         it,     inside,     folder
+13	        He,       sets,         it,         in,      front
+14	   someone, be Avoiding,       gaze,       null,       null
+14	   someone,     stares,       null,       null,       null
+15	        He,       nods,       null,       null,       null
+16	   someone,    reaches,       null,        for,       file
+16	   someone,       eyes,         it,       null,       null
+16	     chest,     heaves,       null,       With,     glance
+17	      flag,   flutters,       null,     beside,      tower
+18	      eyes,   be fixed,       null,         on,         it
+18	   salutes,    mutters,      words,       With,       eyes
+18	        he,    mutters,      words,       With,       eyes
+19	        He,     lowers,       gaze,       null,       null
+20	        TV,      shows,       null,       null,    greater
+21	   trooper,         is,       null,       null,    watches
+22	   someone,     sniffs,  carnation,       null,       null
+23	     woman,      joins,    someone,       null,       null
+24	   fiancee,   caresses,       neck,       null,       null
+25	      They,       kiss,       null,       null,       null
+26	   someone,      turns,       null,         to,    someone
+27	    Marine,     Skypes,       null,       with,      woman
+28	        He,    punches,        arm,       null,       null
+28	        he,    notices,      stare,       null,       null
+29	     lanky,       null,       null,       null,      grins
+30	    Marine,       sits,       null,         in,     office
+31	       leg,   jiggling,       null,       null,       null
+31	        he, be jiggling,       null,       null,       null
+31	        he,     points,       null,         to,       bowl
+32	    Marine,    reaches,       null,        for,       bowl
+33	        He,  withdraws,       hand,       null,       null
+33	    doctor,     smiles,       null,       null,       null
+34	   someone,      moves,       head,       null,       null
+35	   someone,    rumples,       lips,       null,       null
+36	        He,       taps,     finger,       null,       null
+37	    doctor,    glances,       null,         at,        him
+38	        He,     writes,      notes,       null,       null
+39	   someone,      gives,       look,       null,       null
+40	   someone,  be Rising,       null,       null,       null
+40	   someone,      takes,    handful,       null,       null
+41	   someone,      holds,       club,       null,       null
+41	        he,     stands,       null,         at, gravestone
+42	        He,      lifts,       club,       null,       null
+43	        he, be Shifting,       gaze,       null,       null
+43	        he,     blinks,       null,         in,   sunlight
+44	        he, be Crouching,       null,       null,       null
+44	        he,     kisses,       hand,       null,       null
+44	      hand,         is,       null,       null,    touches
+44	        he, strolls away,       null,       null,       null
+45	     Night,       time,       null,       null,       null
+46	        he,       null,       null,         in,     course
+47	     Girls,   approach,       null,       null,       null
+48	      girl,   whispers,       null,         to,    another
+48	   another,      grins,       null,       null,       null
+49	 companion,      gives,      smile,       null,       null
+50	    Marine,      swigs,       beer,       null,       null
+51	    Marine,      leans,       null,       null,       null
+52	       She,      holds,        bar,       null,       null
+53	   husband,   wakes up,       null,       null,       null
+54	        he,       pins,        bar,         to,       each
+55	   someone, be Stopping,       null,         at,       door
+55	   someone,      turns,      belly,       null,       null
+55	   someone,     kisses,      belly,       null,       null
+56	   Marines,       ride,       null,     inside,      truck
+57	        he,   Spotting,     Humvee,       null,       null
+57	        he,      halts,       null,       null,       null
+58	        He, heads down,       hill,       null,       null
+59	        20, be Hustling,        two,         by,        two
+59	        20,     follow,   sergeant,       null,       null
+60	      They,       halt,       null,         on,     signal
+61	       men,    hop out,       null,         of,   vehicles
+62	   someone, approaches,    someone,       null,       null
+63	      They,     glance,       null,       null,       null
+64	   someone,  heads off,       null,       null,       null
+65	        He, looks back,       null,       null,       null
+66	   someone,     shifts,       gaze,       null,       null
+67	   someone,      walks,       null,       with,    someone
+68	   someone,      faces, lieutenant,       null,       null
+69	     rides,     drives,       null,         In,     Humvee
+70	      They,      cross,   airfield,       null,       null
+71	   someone,   chuckles,       head,       null,       null
+71	   someone,     shakes,       head,       null,       null
+72	        He,    glances,       null,         at,    someone
+73	   someone,     greets,    someone,       null,       null
+74	   someone,      comes,       null,         to,    bedroom
+74	   someone,   packs up,       null,       null,       null
+75	        He,     enters,       null,         in,       room
+76	   someone,      shoos,    someone,       null,       null
+77	   someone, interrupts,    someone,       null,       null
+78	   someone,       walk,       hall,       null,       null
+79	       CNN,     report,       null,       null,       null
+80	    Marine,   chats up,   Guerrero,       null,       null
+81	     units,     attend,   briefing,       null,       null
+82	   someone,       swap,       look,       null,       null
+83	     slide,       show,       null,       null,       null
+84	   someone,    glowers,       null,       null,       null
+85	   Marines,       grab,    helmets,       null,       null
+86	 newswoman,    reports,       null,       from,      beach
+87	   someone,    watches,       news,      Among,     troops
+88	   someone,      watch,       null,       null,       null
+89	      wave,    reveals,     dozens,         On,     screen
+90	   Station,         is,       null,       null, California
+90	   Marines,     hustle,       null,         to,    waiting
+91	   someone,     shoots,       head,         at,   Guerrero
+92	   someone,  addresses,        men,       null,       null
+93	      null,       null,       null,         on,         he
+94	   Marines,        try,       null,       null,       null
+95	       Men,       file,       null,       null,       null
+96	   someone,    lingers,       null,       near,    someone
+97	       man,     stuffs,        tag,      under,       lace
+98	    rookie,      looks,       null,         at,     Marine
+99	   someone,      chews,        tee,      while,    reading
+100	  Guerrero,      calls,       null,         to,    someone
+101	  Guerrero,     averts,       gaze,       null,       null
+102	   someone,       eyes,    someone,       null,       null
+102	   someone,     shares,       look,       with,    someone
+103	   someone, be Writing,     letter,       null,       null
+103	   someone,      wipes,       brow,       with,      thumb
+104	        he, be Finishing,       null,       null,       null
+104	        he,      folds,       page,       null,       null
+104	        he,  puts away,         it,       null,       null
+105	lieutenant,      licks,       lips,       null,       null
+105	        he,      spots,    someone,       null,       null
+105	   someone,  be eyeing,        him,       null,       null
+106	   someone,      wipes,       face,       null,       null
+107	      null,         He,       null,     behind, helicopters
+108	      null,       null,       null,       null,       null
+108	      null,       null,       null,       null,       null
+109	   someone,      gapes,       null,       null,       null
+110	        It,      shows,    craters,       null,       null
+111	      view,      shows,      smoke,       null,       null
+112	      null,       null,       null,         In,    cockpit
+113	   someone,  looks out,     window,       null,       null
+114	      city,    injures,       null,       null,       null
+115	      unit,    debarks,       null,       null,       null
+116	   Marines,      enter,     hangar,       null,       null
+117	  sergeant,  takes off,     helmet,       null,       null
+118	    Marine,    crosses,    station,       null,       null
+119	   someone,     checks,      watch,       null,       null
+120	   someone,     shoots,       gaze,       null,       null
+121	     group,  disperses,       null,       null,       null
+122	      unit,     stands,       null,       null,       null
+123	helicopters,    descend,       null,       null,       null
+124	        He,    watches,       null,         in,       into
+124	        He,      walks,       null,         in,       into
+125	 civilians,       pass,       null,       null,       null
+126	       man,     passes,    someone,       null,       null
+127	        he,   advances,       null,       null,       null
+128	      unit,    reaches,     street,    Against,       flow
+128	    street,  be filled,       null,       with,   vehicles
+129	     bombs,      burst,       null,       Down,     street
+130	      Unit,      walks,       null,    through,      smoke
+131	   someone,   flinches,       null,       null,       null
+132	    object,      falls,       null,       from,        sky
+133	   someone,     raises,       hand,       null,       null
+134	   someone,       does,       same,       null,       null
+135	   someone,    signals,       null,       null,       null
+135	      them,    move on,       null,       null,       null
+136	   someone, glances around,       null,       null,       null
+137	      unit,  steps out,       null,         of,      alley
+137	      unit,    crosses,     street,       null,       null
+137	    street, be littered,       null,       with,      items
+138	      They,       pass,      truck,       with,       door
+139	    Marine,       aims,       null,       null,       null
+139	        he,     lowers,     weapon,         on,    finding
+139	    driver, be slumped,       null,    against,      wheel
+140	   Marines,     appear,       null,    through,        Now
+141	      cars,       mark,       path,       null,       null
+142	   someone,   looks up,       null,       from,        map
+143	   Simmons,       aims,      rifle,       null,       null
+144	        he,       sees,       body,    Through,      scope
+145	        he,    burning,      steps,       null,       null
+146	      unit,      moves,       null,         on,       null
+146	      unit, spread out,       null,      along,     street
+147	   someone,      keeps,       null,       null,       null
+147	     alert,       gaze,       null,       null,       null
+148	        He,      peers,       null,    through,      scope
+149	  sergeant, approaches,      house,       null,       null
+149	      body,       lies,      house,       null,       face
+150	    others,      ready,    weapons,       null,       null
+151	   someone,     raises,      rifle,       null,       null
+152	      they,       peer,       null,     across,       haze
+153	   someone,       aims,     weapon,         at,        car
+153	        he,     shifts, crosshairs,    through,      right
+154	  Shepherd,  trots out,       null,       null,       null
+154	        he,   looks up,       null,       null,       null
+155	 fireballs,       null,       null,         in,        air
+156	    shells, be Guerrero,       null,    through,       haze
+156	    shells,       fall,       null,         on,       dirt
+157	   someone,  be Frozen,       null,       with,       fear
+157	   someone, looks around,       null,       null,       null
+158	   someone,  stands up,       null,       null,       null
+158	   someone,    barrels,       null,    through,       gate
+159	        He,   pulls up,        him,       null,       null
+160	      They,         go,       null,    through,       door
+160	      They,  head down,       path,       null,       null
+161	      null,       null,       null,         To,      alley
+162	   someone, left behind,       null,       null,       null
+163	        He,   shuffles,       null,    through,       gate
+164	    others,      barge,       null,         in,         to
+165	        He,      faces,     Marine,       null,       null
+166	  swallows,    glances,       null,       null,       null
+166	        he,    glances,       null,       null,       null
+167	   someone,      burst,       null,       into,       room
+168	        He,      limps,       null,       null,       past
+168	        he,       uses,      radio,       null,       null
+168	        he,     lowers,    himself,         in,     corner
+169	       gun,     raised,       null,       null,       null
+169	        he,     knocks,       null,       over,        box
+169	       box,     spills,       null,       onto,       head
+170	    Marine,     creeps,       null,    through,    blasted
+171	       gun,  be seeing,      dryer,       null,       null
+171	        he,    relaxes,       null,       With,        gun
+172	        he,     Firing,       null,       null,       null
+172	        he,      turns,       null,         to,       hole
+173	        he, be Staring,       null,       null,       null
+173	        he,   backs up,       null,         to,       door
+173	        he,      feels,       null,        for,       knob
+174	        He,      opens,         it,       null,       null
+174	        he,    hurries,       null,       null,       null
+175	   someone,      leads,      group,       into,    complex
+176	      wall,    riddled,       null,       with,    bullets
+177	        He,    signals,       null,        for,        men
+178	     gazes,     shares,       look,       null,       null
+178	        he,     shares,       look,       null,       null
+179	   someone,      waves,       them,         on,       null
+180	   someone,    adjusts,      scope,         In,  courtyard
+181	        he, be Staring,      scope,       null,       null
+181	        he,  sidesteps,       null,         in,      front
+181	    stairs,    lead up,       null,         to,      patio
+182	        he, be Swinging,       null,       null,       null
+182	        he,       aims,        gun,         at,        sky
+182	        he,       sees,    nothing,       null,       null
+183	     alien,    emerges,       null,       from,       pool
+184	        he, wheels around,       null,       null,       null
+185	        He,     knocks,         it,       null,       null
+186	   notices, be Sitting,       null,       null,       null
+186	   notices,      smoke,       null,       null,       null
+187	        he,     shakes,       null,        off,       pack
+187	        it,      fills,        air,       null,       null
+188	   someone,       gets,       null,         to,       feet
+188	   someone,   limps up,     stairs,       null,       null
+188	      feet,         is,       null,       null,      rifle
+189	        he, be Creeping,       null,         to,       edge
+189	        he,       aims,       null,       into,      water
+190	   Shadows,       move,       null,      under,    surface
+190	        he,     shoots,       null,       null,       null
+191	 Something,      moves,       null,      below,    surface
+192	   someone, approaches,        him,       null,       null
+193	   someone,      pulls,        pin,       from,    grenade
+194	     Water,      dives,       null,         in,   explodes
+195	   someone,     spears,       null,     around,   building
+196	     group, creeps out,       null,      after,        him
+197	   someone,      gives,        nod,       From,     across
+198	       men,   move out,       null,       into,       open
+198	      open,         is,       null,       null,        one
+198	      them,    limping,       null,       null,       null
+199	   someone,     guides,   Guerrero,       null,       null
+199	  Guerrero,      wears,    bandage,       null,       null
+200	   Marines,       head,       null,       into,     street
+200	projectile, streaks down,       null,       null,       null
+201	   someone,    presses,   dressing,         to,       neck
+202	        He, turns away,       null,       null,       null
+203	     spots,    figures,       null,         in,    outside
+204	        He,     rushes,       null,    through,       door
+205	     group,    emerges,       null,       from,      smoke
+206	   someone,    beacons,       null,       null,       null
+207	      four, friendlies,       race,     across,     street
+208	   someone,       eyes,        gun,       null,       null
+209	   someone, looks over,       null,       null,       null
+210	     group,    carries,    Simmons,       null,       null
+210	 stretcher,  be passed,    someone,       null,       null
+211	 formation,     passes,       null,       null,       null
+212	   portico,       null,       null,         at,    Station
+213	      They,      ready,       ammo,       null,       null
+214	    others,      enter,    station,       null,       null
+215	      They,      sweep,       area,       null,       null
+216	   someone,     checks,       body,       null,       null
+217	      They, approaches,       null,       null,       null
+218	  corporal,     tosses,    grenade,       null,       null
+219	       men, creep down,       hall,         In,    station
+220	   someone,    signals,       them,       null,       halt
+221	        He,     points,       null,         to,       head
+222	   someone,       nods,       null,     Behind,        him
+223	      they,      enter,       null,       null,       null
+223	   someone,     sweeps,      light,       from,      scope
+224	        It,     passes,       null,       over,       legs
+224	    chairs,        sit,       null,     beside,       pair
+225	   someone, be Spotting,   movement,    through,        gap
+225	   someone,  turns off,      light,       null,       null
+226	   someone,     follow,       suit,       null,       null
+227	       gun,   be aimed,       null,         at,        gap
+227	   someone,    glances,       null,         at,        him
+227	   someone,     points,       null,       With,        gun
+228	        He,      gives,    someone,       null,       null
+228	        he,     creeps,        nod,       null,       null
+229	   someone,  be Moving,       null,       past,       desk
+229	   someone,     lowers,       gaze,         to,        man
+230	        He, heads around,       side,       null,       null
+230	        He,      turns,      light,       null,       null
+231	      beam,      glows,       null,         on,        man
+232	     group, carries over,    Simmons,         on,  stretcher
+233	      They,       head,       null,       null,       null
+234	      They,        hug,       null,       null,       null
+235	   someone,       eyes,   comrades,       null,       Lift
+236	     burst,   explodes,       null,    through, windshield
+238	   someone, leads back,  civilians,         to,       spot
+239	   someone,      carry,        man,       null,       null
+240	   someone,     shifts,       eyes,       null,       null
+241	   someone,      guard,      doors,         at,        end
+242	     buddy,      weeps,       null,       null,       null
+243	   someone, approaches,    someone,       null,       null
+243	   someone,    listens,       null,         to,      phone
+244	        He,       hits,      chair,       null,       null
+245	      eyes,    trained,       null,         on, lieutenant
+246	   someone,      meets,       gaze,       null,       null
+247	      Jets,       soar,       null,    through,        sky
+248	   someone,       take,   position,       null,       null
+249	   someone,     tosses,     helmet,       null,       null
+249	        he,      gives,        him,       null,       null
+250	       Now,       null,       null,         on,        CNN
+251	        He,     shines,   penlight,       null,       null
+252	    father,       find,    someone,         at,   fountain
+253	   someone,       nods,       null,       null,       null
+254	      face,     somber,       null,       null,       null
+255	        He,     points,       null,         to,    someone
+256	   someone,    salutes,       null,       null,       null
+257	   someone,      lifts,       hand,       null,       null
+257	       him,    gesture,       null,       null,       null
+258	   someone,      grins,       null,       null,       null
+259	   someone,       nods,       null,         at,    someone
+260	      look,    crosses,       face,         As,      leave
+261	      null,       null,       null,         On,       roof
+262	    Aliens,    gear up,       null,         on,    rooftop
+263	       One,     hovers,       null,       over,      other
+264	       CNN,     report,       null,       null,       null
+265	       One,      draws,       null,         at,      table
+266	      aunt,      holds,       gaze,       null,       null
+267	   someone,       eyes,       city,       From,       roof
+268	   someone,  move away,       null,       from,     others
+269	   someone,    watches,       null,    through,      scope
+270	   someone,     rushes,       null,       null,       null
+271	        He,      leads,    someone,         to,      alien
+272	   someone, be Examining,       body,       null,       null
+272	   someone,      notes,      piece,         to,       bone
+273	   someone,      pokes,      alien,       null,       null
+274	   someone,     shoots,         it,       null,       null
+274	   someone, be causing,       null,       null,       null
+275	      They,       drag,     inside,       null,       null
+276	   someone, rushes over,       null,       null,       null
+277	      They,       drag,       body,         to,       back
+278	       She,      gives,    someone,       null,       null
+279	   someone,      watch,       null,    through,     scopes
+280	   someone,    reaches,       null,      under,       dash
+281	    slices,       open,      chest,         In,    station
+282	   someone,      stabs,         it,       null,       null
+282	   someone,      clear,     spurts,       from,       vent
+283	        He,      stabs,       null,       null,       null
+283	     water,     spurts,       null,       from,     tissue
+284	   someone,      tries,       null,       null,       null
+285	        He,      looks,       null,         at,    someone
+286	       vet,     leaves,       null,       null,       null
+287	   someone,      moves,       null,       null,       null
+288	      door,     swings,       null,       null,       null
+289	     alien, pushes through,       null,       null,       null
+290	   someone, pulls away,      layer,       null,       null
+290	   someone, be revealing,        sac,       null,       null
+291	     Fluid, spurts out,       null,       null,       null
+292	   someone,    grenade,       hall,       null,       null
+292	   someone,   runs off,       null,       null,       null
+293	   someone,       grab,       gear,       null,       null
+294	     group,     rushes,       null,     toward,        bus
+295	      They, propel down,   building,       null,       null
+296	   someone,  gets down,       null,         on,      floor
+297	   someone,   grimaces,       null,         on,      floor
+298	   someone, looks around,       null,       null,       null
+300	      null,         He,       null,         on, neighborhood
+301	      They,      share,       look,       null,       null
+302	   someone,      wipes,       brow,       with,     finger
+303	      gaze,     shifts,       null,       null,       null
+304	   someone,      lifts,       eyes,       from,      rifle
+305	      stop,    jostles, passengers,       null,       null
+306	      aunt,      stare,       null,       null,  wide-eyed
+307	  aircraft,        fly,       null,       null,       null
+308	  soldiers,  duck down,       null,    between,      seats
+308	  aircraft,       pass,       null,       null,       null
+309	   Marines,        aim,      rifle,       null,       null
+310	   Marines,   turn off,      radio,       null,       null
+311	   someone,    focuses,       null,         on,    station
+312	   someone,      takes,      radio,       null,       null
+312	   someone,   heads on,       null,       null,       null
+313	   someone,   crouches,       null,       null,       null
+313	     mouth,      agape,       null,       null,       null
+313	     mouth, looks around,       null,       null,       null
+314	   someone,      skids,       null,       null,       null
+315	        He,      takes,       band,       from,      wrist
+316	  aircraft,      heads,       null,         in,  direction
+317	  sergeant,      raise,       null,       null,       null
+318	        It,    arrives,       null,         at,    station
+318	        he,       lobs,    grenade,       null,    arrives
+319	   someone,      gapes,       null,       null,       null
+319	     smoke,    filling,     street,       null,       null
+320	      brow,    furrows,       null,       null,       null
+321	   someone,  looks out,       null,       with,      stare
+322	      girl,      lifts,       head,       from,      floor
+323	   someone,       sees,       rise,    Through,      smoke
+324	     flame, be whipping,       null,         in,       wind
+324	  sergeant, be Obscured,       null,       null,       null
+324	  sergeant,  heads off,       null,       null,       null
+325	        he, be Hoofing,         it,    through,      trail
+325	        he,    arrives,       null,         at,   aircraft
+326	     Fluid,      spews,       null,       from,      hoses
+327	   someone,  be Aiming,     weapon,       null,       null
+327	   someone,   examines,      craft,       null,       null
+328	        he, steps back,       null,         on,        bus
+329	        he, be Leaning,       null,    against,   handrail
+329	        he,      rests,   forehead,         on,       hand
+330	   someone, looks over,        him,       null,       null
+330	   someone, glances up,       null,         at,        him
+331	      hand,   trembles,       null,       null,       null
+332	     gazes,   looks up,       null,         to,    someone
+332	        he,   looks up,       null,         to,    someone
+333	   someone,   looks up,       null,         at,        him
+334	       His,       gaze,       hard,       null,       null
+335	        he,     starts,       null,       null,       null
+335	   someone,      stops,        him,       null,       null
+336	   someone,       nods,       null,       with,      smile
+337	   someone, gazes back,       null,         at,    someone
+337	   someone,       gets,        bus,       null,       null
+337	       bus,  be moving,       null,       null,       null
+338	   someone,   bats off,     helmet,         In,       back
+338	   someone,      makes,       fist,       with,       hand
+339	       vet, approaches,       null,       null,       null
+340	       She,       nods,       null,       null,       null
+341	   someone,    touches,        cut,       null,       null
+342	      They,      share,      smile,       null,       null
+343	       She, looks down,       null,         at,       hand
+344	       She,      gives,        him,       null,       null
+344	       She,     leaves,       null,       null,       null
+345	       bus,     passes,       null,      under,    highway
+345	     tanks,        sit,    highway,       null,       null
+346	   someone,    gets up,       null,       null,       null
+346	   someone,      grabs,        arm,       null,       null
+347	     gazes,     shifts,       eyes,       null,       null
+347	        he,     shifts,       eyes,       null,       null
+348	    corner,       runs,       null,         as,        Now
+348	    corner,         is,       null,       null,    studies
+349	   someone,      joins,        him,       null,       null
+350	       bus,      makes,        way,         up,     curved
+350	    couple,       soar,       null,       null,       null
+351	   freeway, be littered,       null,       with,   vehicles
+351	       bus, knocks out,       cars,         of,        way
+351	        it, rolls along,       null,       null,       null
+352	   Marines,       load,      clips,       null,       null
+353	       vet,    strokes,       hair,       null,       null
+354	   someone, looks back,       null,       null,       null
+355	      They,       pass,   clearing,       null,       null
+356	 explosion,     erupts,      yards,       null,       null
+357	   someone,       ties,    sneaker,       null,       null
+358	   someone,    hurries,       null,         to,      front
+359	        he, peers down,       null,       from,       hole
+359	   solider,      joins,        him,       null,       null
+360	      null,         He,       null,         at,       door
+361	   Towards,       null,       null,       null,       rest
+362	        he,      falls,       null,       null,       null
+362	        he, knocks down,    someone,       null,       null
+363	   someone,  stands up,       null,         On,     ground
+364	   someone,   astounds,      alien,       null,       null
+364	        he, hustles up,       null,     beside,       null
+365	       gun,       null,       null,         on,       roof
+366	      null,         He,       null,         at,      alien
+367	   someone,     smiles,       null,         At,        car
+367	   someone,   lets out,       sigh,         At,        car
+368	     blast,       null,       null,       null,       cars
+369	     smile,      fades,       null,       null,       null
+370	   someone,    look up,       null,       from,     sights
+371	      null,       null,       null,     Around,      waist
+372	   someone,     lowers,     weapon,       null,       null
+372	   someone,     starts,       null,       null,       null
+373	      null,         He,        SUV,       null,       null
+374	   vehicle,      flips,       null,       null,       null
+375	   someone,      yanks,       null,       null,       null
+375	   someone,       free,       null,       null,       null
+375	        he,      falls,       null,       null,       null
+376	   missile, be zipping,       null,     toward,       null
+377	   someone,     shakes,       head,       null,       null
+378	   someone,    punches,        car,       null,       null
+379	        He,     checks,   progress,       null,       null
+380	      tire,         is,       null,       null,    someone
+380	     Brick,     stands,       null,       null,       null
+381	      null,       null,       null,         To,      wheel
+382	      They,       move,       null,     behind,        car
+382	      They,        add, explosives,       null,       null
+383	      They, hustle away,       null,       null,       null
+384	   machine,      fires,       null,       null,       null
+385	   someone, looks over,        him,       null,       null
+386	     alien,     bullet,       null,         By,    chopper
+387	   someone,       help,        him,     Behind, helicopter
+388	   someone,       sees,      alien,       null,       null
+389	   someone,     leaves,   corpsman,       null,       null
+389	   someone,      grabs,        gun,       null,       null
+390	        He,      kills,      alien,       null,       null
+391	       vet,    hurries,       null,         to,        him
+392	   someone,     shoots,       null,       null,       null
+393	   Marines,      stare,       null,       null,       null
+394	   someone,      takes,     letter,       from,     pocket
+395	        he, passes over,     letter,       null,       null
+395	      grip,      hands,       null,       null,       null
+396	   someone,      looks,        him,         in,        eye
+396	   someone,      gives,        nod,       null,       null
+397	   someone,    watches,       null,       null,       null
+397	  sergeant,         go,       null,       null,       null
+398	       TNT,    sets up,       null,       null,       null
+399	   someone,      takes,       pack,        for,       ammo
+400	        He,       aims,        bag,       null,       null
+401	   someone,    watches,       null,       null,       null
+401	    aliens,       draw,       null,       null,       null
+402	        He,  sits back,       null,         in,    doorway
+403	   someone,    watches,       null,       from,   position
+403	  position,         is,       null,       null,      yards
+404	        He,   squeezes,  detonator,       null,       null
+405	       bus,      blows,       null,       null,       null
+406	   someone,      shuts,       eyes,       null,       null
+407	     smoke,     clears,       null,       null,       null
+407	   Marines,       lift,      heads,       null,       null
+407	   Marines, be looking,       null,       null,       null
+408	   someone,    gets up,       null,       null,       null
+409	      rest,       rise,       null,         to,       feet
+409	   someone,      gazes,       null,       null,       null
+410	       vet,      looks,       null,       over,   shoulder
+411	   squints, be Getting,       null,         to,       feet
+411	   squints,    remains,       null,         of,        bus
+412	        he,     stares,       null,       null,       null
+413	      lips,     parted,       null,      above,      strap
+414	   someone, approaches,   wreckage,       null,       null
+415	        He,      finds,    remains,         by,       door
+416	        He,      lifts,       head,       over,   shoulder
+417	        he, be Lowering,       eyes,       null,       null
+417	        he, be Lowering,       lips,       null,       null
+417	        he, heads back,       null,     toward,      group
+418	        He,       pass,   soldiers,       null,       null
+418	  soldiers,      stand,       null,       null,       null
+419	   someone,      stays, motionless,       null,       null
+420	      they,       walk,       null,       amid,  buildings
+420	    battle,      rages,       null,       null,       null
+421	      They,     arrive,       null,         in, supermarket
+422	   Marines,      lower,    someone,         to,      floor
+423	       man,     winces,       null,       null,       null
+423	      face,       pale,       null,       null,       null
+424	   someone,     sweeps,      rifle,       past,      boxes
+425	   someone,   approach,       null,       null,       null
+426	       She,   picks up,      phone,       null,       null
+427	   someone,       tend,       null,         to,    someone
+428	        he,    dresses,      wound,       null,       null
+429	   someone,       nods,       null,       null,       null
+430	        He,      helps,       null,       with,    bandage
+431	   Marines,      share,       look,       null,       null
+432	  sergeant,      wipes,       brow,       null,       null
+432	  sergeant,   unscrews,     bottle,       null,       null
+432	        he,  sits back,       brow,       null,       null
+433	   someone,      lifts,       hand,       null,       null
+434	   someone,       eyes,   superior,       null,       null
+435	   someone,    glances,       hand,         at,     Marine
+436	  sergeant,      holds,       gaze,       null,       null
+437	   someone,      grabs,     helmet,       null,       null
+438	   someone,    unfolds,    blanket,       null,       null
+440	   someone, watches on,       null,       null,       null
+441	     craft,     hovers,       null,         On,     screen
+442	   someone,      meets,       null,       null,       null
+442	       her,       gaze,       null,       null,       null
+442	       she,       nods,       null,       null,       null
+443	      They,        put,    someone,       into,   backroom
+444	   someone,   compares,      clock,       null,       null
+445	   someone,     checks,      watch,       null,       null
+446	   someone,      grabs,     helmet,       null,       null
+447	   someone,    adjusts,     weapon,       null,       null
+448	   someone,     straps,       null,         on,     helmet
+449	   someone,     kneels,       null,       near,        vet
+450	   someone,    watches,      clock,       null,       null
+451	       vet,     kisses,        one,       null,       null
+452	   someone,     closes,       eyes,       null,       null
+452	        he,     closes,       eyes,       null,       null
+453	       Joe,      watch,      clock,       null,       null
+454	      hand,      ticks,       null,     toward,         12
+455	   someone,      helps,       null,       null,       null
+456	   someone,   clutches,     helmet,       null,       null
+457	   someone,       puts,       head,         to,      knees
+458	   someone,      looks,       null,         at,      clock
+459	      hand,      ticks,       null,       null,       null
+459	      hand,       pass,         12,       null,       null
+460	   someone,      looks,       null,         at,      watch
+461	        He,   looks up,       null,         at,      clock
+462	   someone,         do,       same,       null,       null
+463	   someone,  stands up,       null,       null,       null
+464	    Hector,      helps,       null,       null,       null
+464	   Marines,      carry,    someone,       null,       null
+465	   someone, ushers out,   everyone,       null,       null
+466	     smoke,      fills,        sky,       null,       null
+467	    Flames,       rise,       null,       from,   wreckage
+468	     group,     stares,       null,       from,      fence
+469	   someone,      steps,       null,       null,       null
+470	   someone,     shines, flashlight,       null,       null
+471	     group,     enters,       null,       null,       null
+472	      They,      carry,    someone,       into,       tent
+472	      They,   set down,        him,       null,       null
+473	   someone,      hangs,        hat,       null,       null
+474	   someone,      paces,       null,       null,       null
+475	   someone,      faces,    someone,       null,       null
+476	   someone,      walks,       null,       with,    someone
+477	  sergeant, be Brightening,     little,       null,       null
+477	  sergeant,      flows,       null,         to,       stop
+478	        He,    crosses,     hangar,       null,       null
+479	   someone,      leads,    someone,       null,       null
+480	        he,     rifles,       null,    through,  paperwork
+481	   Marines,        set,       body,         on,      floor
+482	   someone, be Checking,      pulse,       null,       null
+482	   someone,      looks,       null,         at,     Hector
+483	       boy,    glances,       null,         at,        him
+483	        he,  steps out,       null,       null,       null
+484	    Hector,    be Left,       null,       null,       null
+484	    Hector,      holds,       hand,       null,       null
+485	   someone,     points,       null,         to,   location
+486	   someone,     enters,       null,       null,       null
+486	   someone,  takes off,     helmet,       null,       null
+487	   someone, glances out,       null,       null,       null
+488	   someone,    look up,       null,       from,        map
+489	   someone,      drops,       head,         to,      hands
+489	        he,     pounds,       null,         on,      table
+490	  sergeant,     leaves,        map,       null,       null
+491	        he, be Reaching,    walkway,       null,       null
+491	        he,    watches,    someone,    through,       flap
+492	     chest,     heaves,       null,       null,       null
+493	    Hector,       sits,       null,       over,     father
+494	        He,       lays,       head,         on,      chest
+495	        he, be Grimacing,       null,       null,       null
+495	        he,      grabs,      shirt,       null,       null
+496	       vet,     kneels,       null,     beside,     Hector
+497	       She,       lays,       hand,         on,   forehead
+497	       She,   caresses,       back,       with,      other
+498	   someone,      cross,     hangar,       null,       null
+499	   someone, approaches,       null,       null,       null
+500	    Hector,   runs out,       null,         of,       tent

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Vector;
 
 import de.mpii.clausie.Constituent.Type;
 import edu.stanford.nlp.ling.IndexedWord;
@@ -85,7 +86,6 @@ class ClauseDetector {
 				addPartmodClause(clausIE, subject, object, roots);
 			}
 		}
-
 		// postprocess clauses
 		// TODO
 		for (int i = 0; i < clausIE.clauses.size(); i++) {
@@ -166,6 +166,15 @@ class ClauseDetector {
 		// to store the heads of the clauses according to the CCs options
 		List<IndexedWord> ccs = ProcessConjunctions.getIndexedWordsConj(semanticGraph, clausIE.depTree, clauseRoot,
 				EnglishGrammaticalRelations.CONJUNCT, toRemove, options);
+		
+		//This is for the case when the conjunctive relationship is not clear
+		List<IndexedWord> ccs2 = ProcessConjunctions.getIndexedWordsConj(semanticGraph, clausIE.depTree, clauseRoot,
+				GrammaticalRelation.DEPENDENT, toRemove, options);
+		
+		HashSet<IndexedWord> ccset = new HashSet<>(ccs);
+		ccset.addAll(ccs2);
+		ccs = new Vector<>(ccset);
+		
 		for (SemanticGraphEdge edge : toRemove)
 			semanticGraph.removeEdge(edge);
 
@@ -194,7 +203,7 @@ class ClauseDetector {
 			SemanticGraphEdge poss = null;
 			if (rcmod != null)
 				poss = DpUtils.findDescendantRelativeRelation(semanticGraph, root,
-						EnglishGrammaticalRelations.POSSESSION_MODIFIER);
+						EnglishGrammaticalRelations.POSSESSION_MODIFIER, 0);
 
 			// determine constituents of clause
 			// ArrayList<IndexedWord> coordinatedConjunctions = new ArrayList<IndexedWord>(); // to

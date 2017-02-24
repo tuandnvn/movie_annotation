@@ -1,0 +1,76 @@
+704	Outside.
+727	Outside.
+744	Now at home.
+810	Outside.
+846	SOMEONE with a hopeful smile; SOMEONE with a dumbfounded look.
+1022	Later, at the clinic.
+1034	Now, back in the waiting room.
+1037	And overlaid with iodine-treated film.
+1114	Morning.
+1159	Now, an ambulance in front of restaurant.
+1217	Later on a sidewalk.
+1380	Bethesda fountain.
+1799	Now, darkness.
+1833	Back in the bank.
+1835	Back in the command truck.
+1878	The detective.
+1942	The circular vault door.
+1963	safety deposit box room.
+2122	then hides in the safety deposit vault.
+2124	Back in the truck.
+2131	Morning.
+2190	and rummage through the three black trash bags in the center of the floor.
+2566	Back in the soccer game.
+2597	Later outside the bathroom.
+2759	The guards.
+2822	The trigger.
+2874	And run across the street toward the bank.
+2875	Inside.
+2880	Inside.
+2980	On SOMEONE' Pierce-Arrow.
+3070	Opens, revealing a tall man with rugged features.
+3120	Now, at a shoeshine stand.
+3159	Handcuffs.
+3203	along a dim street.
+3247	The metal door.
+3391	Back to the torture session.
+3484	Further ahead.
+3575	Things and move out.
+4131	 and grabs a second one on her way out.
+4289	Outside the door.
+4551	Meanwhile, in the parking lot of a Dunkin' Donuts and a Baskin Robbins plaza.
+4750	Later, in a hallway.
+5197	Daytime, outside.
+5565	Later, outside an airport.
+6010	Later in the studio.
+6147	Outside.
+6151	stairs.
+6183	A fat female vendor.
+6326	Later in the studio.
+6343	Later in a limo.
+6787	Smiling SOMEONE, back to her slim self, pushes her bike out onto the pavement with a guitar over her shoulder.
+7135	The babysitter.
+7188	Directly ahead, the enormous, bright disk of the station clock.
+7567	The BMW.
+7913	Bad Robot.
+8023	There's a guy at the wheel of the pickup.
+8257	Outside, there is chaos on the streets as people and military personnel hurry to and fro.
+8297	There are papers and rolls of film inside.
+8324	A rifle.
+8625	A saleswoman.
+8643	An exaggerated shrug.
+8668	The gorilla suit.
+8687	People.
+8947	Now, at a school.
+8994	Now, at home.
+9060	Back in the car.
+9241	Later, at home.
+9331	Back in the kitchen.
+9410	Daylight.
+9521	The Hogwarts Express.
+9585	A classroom.
+9587	Outside the school.
+9634	A wardrobe.
+9649	A hideous Dementor.
+9775	A classroom.
+9791	Outside, in a ruined part of the castle, crows alight on the fallen masonry.

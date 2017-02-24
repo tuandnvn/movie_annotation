@@ -42,14 +42,18 @@ public class DpUtils {
 	}
 
 	/** Finds the first occurrence of a grammatical relation or its descendants for a relative pronoun */
+	// Dont' go to deep
 	public static SemanticGraphEdge findDescendantRelativeRelation(SemanticGraph semanticGraph, IndexedWord root,
-			GrammaticalRelation rel) {
+			GrammaticalRelation rel, int level) {
+		if (level > 2) {
+			return null;
+		}
 		List<SemanticGraphEdge> outedges = semanticGraph.getOutEdgesSorted(root);
 		for (SemanticGraphEdge e : outedges) {
 			if (e.getDependent().tag().charAt(0) == 'W' && rel.isAncestor(e.getRelation())) {
 				return e;
 			} else
-				return findDescendantRelativeRelation(semanticGraph, e.getDependent(), rel);
+				return findDescendantRelativeRelation(semanticGraph, e.getDependent(), rel, level + 1);
 		}
 		return null;
 	}

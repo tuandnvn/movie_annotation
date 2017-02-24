@@ -1,9 +1,8 @@
 package tuandn;
 
 /**
- * This is a simple representation of a clause
- * For example, clause: 
- * SOMEONE takes a bag of ice from a cooler
+ * This is a simple representation of a clause For example, clause: SOMEONE takes a bag of ice from a cooler
+ * 
  * @author Tuan
  *
  */
@@ -29,8 +28,13 @@ public class SentenceTuple {
 				+ ", prepDep=" + prepDep + "]";
 	}
 
+	public String toBeautifulString() {
+		return String.format("%10s, %10s, %10s, %10s, %10s", subject, verb, object, prep, prepDep);
+	}
+
 	/**
 	 * I will have to produce a sentence form string from this representation
+	 * 
 	 * @return
 	 */
 	public String toSentenceString() {

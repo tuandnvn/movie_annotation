@@ -192,7 +192,9 @@ public class IndexedConstituent extends Constituent {
 	}
 
 	public IndexedWord getDependent() {
-		return semanticGraph.getChildList(root).get(0);
+		if (semanticGraph.getChildList(root).size() > 0)
+			return semanticGraph.getChildList(root).get(0);
+		return null;
 	}
 
 	// -- utility methods -------------------------------------------------------------------------

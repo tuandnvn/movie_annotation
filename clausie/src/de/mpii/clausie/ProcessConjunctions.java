@@ -47,10 +47,8 @@ public class ProcessConjunctions {
 	// it encounters ccs
 	private static void generateConstituents(SemanticGraph semanticGraph, Tree depTree, IndexedConstituent constituent,
 			IndexedWord root, List<Constituent> constituents, boolean firstLevel) {
-
 		List<SemanticGraphEdge> outedges = semanticGraph.getOutEdgesSorted(root);
 		List<SemanticGraphEdge> conjunct = DpUtils.getEdges(outedges, EnglishGrammaticalRelations.COORDINATION);
-
 		Boolean processCC = true;
 		SemanticGraphEdge predet = null;
 
@@ -151,7 +149,6 @@ public class ProcessConjunctions {
 			} else if (!DpUtils.isPredet(edge) && !constituent.excludedVertexes.contains(edge.getDependent()))
 				generateConstituents(semanticGraph, depTree, constituent, edge.getDependent(), constituents, false);
 		}
-
 	}
 
 	/** Checks if a node depending on one conjoint also depends to the other */
@@ -181,13 +178,17 @@ public class ProcessConjunctions {
 	/**
 	 * Retrieves the heads of the clauses according to the CCs processing options. The result contains verbs conjoined
 	 * and a complement if it is conjoined with a verb.
+	 * 
+	 * This is actually only called with GrammaticalRelation = CONJ
 	 */
 	public static List<IndexedWord> getIndexedWordsConj(SemanticGraph semanticGraph, Tree depTree, IndexedWord root,
 			GrammaticalRelation rel, List<SemanticGraphEdge> toRemove, Options option) {
+		//System.out.println("getIndexedWordsConj " + rel);
 		List<IndexedWord> ccs = new ArrayList<IndexedWord>(); // to store the conjoints
 		ccs.add(root);
 		List<SemanticGraphEdge> outedges = semanticGraph.outgoingEdgeList(root);
 		for (SemanticGraphEdge edge : outedges) {
+			//System.out.println(edge.getRelation());
 			if (edge.getRelation().equals(rel)) {
 				List<SemanticGraphEdge> outed = semanticGraph.outgoingEdgeList(edge.getDependent());
 				// first condition tests if verbs are involved in the conjoints. Conjunctions between complements are
@@ -207,7 +208,7 @@ public class ProcessConjunctions {
 				// shared elements.
 				boolean notProcess = !option.processCcAllVerbs && outed.isEmpty()
 						&& shareAll(outedges, depTree, root, edge.getDependent());
-
+				
 				if ((ccVerbs || ccCop) && !ccMainClauses && !notProcess) {
 					ccs.add(edge.getDependent());
 				}
