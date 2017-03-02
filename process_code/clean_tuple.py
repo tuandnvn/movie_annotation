@@ -5,9 +5,15 @@ Created on Mar 1, 2017
 '''
 import argparse
 import re
+from spacy.en import English
 
-def process ( subject, verb, obj, prep, prepDep ):
+def process ( spacy_parser, subject, verb, obj, prep, prepDep ):
+    simple_sentence = subject + verb + obj + prep + prepDep
     
+    lemma_ids = []
+    for token in spacy_parser(simple_sentence):
+        lemma_ids.append(token.lemma)
+        
     # By default, just remove this tuple
     return (None, None, None, None, None)
     
@@ -42,4 +48,3 @@ if __name__ == "__main__":
             filehandler.write(sentence)
             filehandler.write('%10s,%10s,%10s,%10s,%10s' % value)
             filehandler.write('\n')
-            

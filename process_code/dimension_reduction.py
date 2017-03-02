@@ -9,72 +9,104 @@ Created on Feb 27, 2017
 
 import glob
 import os
+import pickle
 
 import argparse
 from sklearn.decomposition import IncrementalPCA
+from sklearn.externals import joblib
 
 import numpy as np
-    
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='A script to process the features from CGG network into lower dimensions')
-
-    parser.add_argument('-i', '--input_directory', action='store', metavar = ('INPUT_DIR'),
-                                help = "The input directory that stores the feature vectors. One feature vector file correspond to one clip." )
     
-    parser.add_argument('-o', '--output_directory', action='store', metavar = ('OUTPUT_DIR'),
-                                help = "The output directory that stores the feature vectors (in reduced dimensions). One feature vector file correspond to one clip." )
+    parser.add_argument('-p', '--process', nargs = 6, metavar = ('INPUT_DIR', 'MODEL', 'CLIP_NAME_FILE', 'ALGORITHM', 'COMPONENTS', 'LIMIT'),
+                                help = "Process INPUT_DIR that stores the feature vectors. One feature vector file corresponds to one clip. \
+                                Generate a decomposition model, save it down to MODEL file. Only use clips in CLIP_NAME_FILE. Limit for the first n clips." )
     
-    parser.add_argument('-f', '--clip_name_file', action='store', metavar = ('CLIP_NAME_FILE'),
-                                help = "File that store clip names." )
+    parser.add_argument('-g', '--generate',  nargs = 5, metavar = ('OUTPUT_DIR', 'MODEL', 'CLIP_NAME_FILE', 'ALGORITHM', 'LIMIT'),
+                                help = "OUTPUT_DIR that stores the feature vectors (in reduced dimensions).\
+                                Loading ALGORITHM model from MODEL file." )
     
-    parser.add_argument('-a', '--algorithm', action='store', metavar = ('ALGORITHM'),
-                                help = "Dimension reduction algorithms to choose from. The supported ones are Incremental PCA (IPCA)")
-    
+    parser.add_argument('-v', '--verbose',  action='store_true', metavar = ('VERBOSE'),
+                                help = "Whether to print out information." )
     
     args = parser.parse_args()
     
-    clip_name_file = args.clip_name_file
-    input_directory = args.input_directory
-    output_directory = args.output_directory
-    algorithm = args.algorithm
+    verbose = args.verbose
     
-    
-    feature_files = glob.glob(os.path.join(input_directory, '*.fv.npy') )
-    feature_file_map = {}
-    
-    for feature_file in feature_files:
-        ff = feature_file.split("/")[-1]
-        feature_file_map[ff[:- len('.fv.npy')]] = feature_file
-    
-    clip_names = []
-    with open(clip_name_file, 'r') as file_handler:
-        for line in file_handler:
-            clip_name, _ = line.split()
-            clip_names.append(clip_name)
-    
-    pca = IncrementalPCA(n_components=500)
-    
-    counter = 0
-    
-    size = 1000
-    for clip_name in clip_names[:1000]:
-        feature_file = feature_file_map[clip_name]
-        array = np.load(feature_file)
+    if args.process and len(args.process) == 6:
+        input_directory = args.process[0]
+        model_file = args.process[1]
+        clip_name_file = args.process[2]
+        algorithm = args.process[3]
+        components = args.process[4]
+        limit = args.process[5]
         
-        pca.partial_fit(array)
-        counter += 1
+        feature_files = glob.glob(os.path.join(input_directory, '*.fv.npy') )
+        feature_file_map = {}
         
-        if counter % 100 == 0:
-            print counter
+        for feature_file in feature_files:
+            ff = feature_file.split("/")[-1]
+            feature_file_map[ff[:- len('.fv.npy')]] = feature_file
+        
+        clip_names = []
+        with open(clip_name_file, 'r') as file_handler:
+            for line in file_handler:
+                clip_name, _ = line.split()
+                clip_names.append(clip_name)
+        
+        trainer = None
+        if algorithm == 'IPCA':
+            trainer = IncrementalPCA(n_components=components)
+        
+        if trainer != None:
+            counter = 0
+            
+            for clip_name in clip_names[:limit]:
+                feature_file = feature_file_map[clip_name]
+                array = np.load(feature_file)
+                
+                trainer.partial_fit(array)
+                counter += 1
+                
+                if counter % 100 == 0:
+                    print counter
+                
+                if verbose:
+                    print clip_name
+            
+            print 'Dump model to ', model_file
+            # Save down model into model_file
+            joblib.dump(trainer, model_file)
     
-    for clip_name in clip_names[:1000]:
-        feature_file = feature_file_map[clip_name]
-        array = np.load(feature_file)
+    if args.generate and len(args.process) == 5:
+        output_directory = args.process[0]
+        model_file = args.process[1]
+        clip_name_file = args.process[2]
+        algorithm = args.process[3]
+        limit = args.process[4]
         
-        reduced_array = pca.transform(array)
-        new_feature_file = os.path.join(output_directory, clip_name + '.rfv')
+        clip_names = []
+        with open(clip_name_file, 'r') as file_handler:
+            for line in file_handler:
+                clip_name, _ = line.split()
+                clip_names.append(clip_name)
         
-        np.save(new_feature_file, reduced_array)
+        trainer = joblib.load(model_file)
+        
+        if trainer != None:
+            for clip_name in clip_names[:limit]:
+                feature_file = feature_file_map[clip_name]
+                array = np.load(feature_file)
+                
+                reduced_array = trainer.transform(array)
+                new_feature_file = os.path.join(output_directory, clip_name + '.rfv')
+                
+                if verbose:
+                    print new_feature_file, reduced_array.shape
+                np.save(new_feature_file, reduced_array)
     
     
     
