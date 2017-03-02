@@ -6,7 +6,7 @@ Created on Mar 1, 2017
 import argparse
 import re
 
-def process ( subject, verb, object, prep, prepDep ):
+def process ( subject, verb, obj, prep, prepDep ):
     
     # By default, just remove this tuple
     return (None, None, None, None, None)
@@ -39,5 +39,7 @@ if __name__ == "__main__":
                 
     with open(output_file, 'w') as filehandler:
         for sentence, value in outputs:
-            filehandler.write()
+            filehandler.write(sentence)
+            filehandler.write('%10s,%10s,%10s,%10s,%10s' % value)
+            filehandler.write('\n')
             
