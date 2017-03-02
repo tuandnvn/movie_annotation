@@ -16,7 +16,7 @@ public class TestFileVerbose {
 
 		ProcessSentence ps = new ProcessSentence(clausIE);
 
-		String path = "../LSMDC task/LSMDC16_annos_val.desc.short.prob.txt";
+		String path = "../LSMDC task/LSMDC16_annos_test.desc.prob.txt";
 
 		try {
 			String content = FileUtil.readFile(path);

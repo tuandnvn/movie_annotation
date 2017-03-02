@@ -1,7 +1,6 @@
 import java.io.IOException;
 
 import de.mpii.clausie.ClausIE;
-import de.mpii.clausie.Clause;
 import tuandn.ProcessSentence;
 import tuandn.SentenceTuple;
 
@@ -53,12 +52,27 @@ public class Example {
 		// String[] sentences = new String[] { "As the guest heads off, SOMEONE appears.",
 		// "Then lifts his mattress, dumping him off." };
 
+		// String[] sentences = new String[] { "SOMEONE gives him a kind look, then adds his signature to the form.",
+		// "He closes it inside a service record folder and sets it in front of SOMEONE.",
+		// "With his eyes fixed on it, SOMEONE salutes then mutters silent words.",
+		// "The mustached trooper, SOMEONE watches with the bald, black Marine in thick-rimmed glasses." };
+
+		// String[] sentences = new String[] { "The woman next to the table stands up",
+		// "SOMEONE anxiously gets up from her work and follows him.",
+		// "Now the van runs in front of a Taco Boy restaurant",
+		// "SOMEONE sets a bent knee at the rear of his seat",
+		// "SOMEONE puts one hand on the side of SOMEONE's face",
+		// "He points to a large banner reading Prodi-G, then notices a pretty girl in the crowd."};
+
+		// String[] sentences = new String[] { "One of the police cars crashes into a minivan.",
+		// "The jock slumps down on a bench on the other side of two columns.",
+		// "SOMEONE eyes a wall of his childhood portraits.",
+		// "She directs his gaze to the back of a chair.",
+		// "Behind him a mass of villagers sits stoically, outside the dwelling, waiting while their case is heard."};
+
 		String[] sentences = new String[] {
-				"SOMEONE gives him a kind look, then adds his signature to the form.",
-				"He closes it inside a service record folder and sets it in front of SOMEONE.",
-				"With his eyes fixed on it, SOMEONE salutes then mutters silent words.",
-				"The mustached trooper, SOMEONE watches with the bald, black Marine in thick-rimmed glasses."
-		};
+				"Who eat the cake on the table",
+				"When does he go to Paris"};
 		// String sentence = "There is a ghost in the room";
 		// sentence = "Bell sometimes makes products";
 		// sentence = "By using its experise, Bell made great products in 1922 in Saarland.";

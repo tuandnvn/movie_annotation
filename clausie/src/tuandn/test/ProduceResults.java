@@ -79,6 +79,8 @@ public class ProduceResults {
 							fw2.write("" + sentencePos);
 							fw2.write("\t");
 							fw2.write(sentence);
+							
+							e.printStackTrace();
 						}
 					}
 				}

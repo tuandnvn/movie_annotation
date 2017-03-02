@@ -32,6 +32,11 @@ public class SentenceTuple {
 		return String.format("%10s, %10s, %10s, %10s, %10s", subject, verb, object, prep, prepDep);
 	}
 
+	public boolean equalNone() {
+		return this.subject == null && this.object == null && this.verb == null && this.prep == null
+				&& this.prepDep == null;
+	}
+
 	/**
 	 * I will have to produce a sentence form string from this representation
 	 * 
