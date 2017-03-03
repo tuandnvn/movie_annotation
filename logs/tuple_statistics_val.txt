@@ -1,0 +1,152 @@
+Number of unique words =  12682
+Number of words with frequency >  1  =  5633
+Number of words with frequency >  5  =  907
+Number of words with frequency >  10  =  482
+Number of words with frequency >  20  =  233
+Number of words with frequency >  50  =  83
+Number of words with frequency >  100  =  39
+[(103, 'hands'), (108, 'stands'), (109, 'by'), (110, 'face'), (110, 'watches'), (119, 'gives'), (119, 'over'), (124, 'people'), (127, 'sits'), (129, 'them'), (131, 'man'), (132, 'takes'), (138, 'gaze'), (140, 'looks'), (151, 'turns'), (160, 'head'), (161, 'hand'), (186, 'through'), (192, 'of'), (194, 'door'), (195, ' '), (222, 'is'), (222, 'then'), (236, 'eyes'), (284, 'they'), (286, 'her'), (300, 'from'), (321, 'into'), (324, 'with'), (364, 'it'), (392, 'him'), (521, 'on'), (583, 'in'), (597, 'at'), (637, 'to'), (873, 'she'), (2230, 'he'), (4675, 'someone'), (17365, 'null')]
+Number of words with frequency >  200  =  18
+Number of words with frequency >  500  =  8
+Number of words with frequency >  1000  =  3
+----------------------------------------------------------------
+
+Number of unique words for  subject  =  1083
+Number of words with frequency >  1  =  463
+Number of words with frequency >  5  =  121
+Number of words with frequency >  10  =  56
+Number of words with frequency >  20  =  29
+Number of words with frequency >  50  =  10
+Number of words with frequency >  100  =  6
+[(128, 'it'), (186, 'null'), (284, 'they'), (872, 'she'), (2216, 'he'), (4083, 'someone')]
+Number of words with frequency >  200  =  4
+Number of words with frequency >  500  =  3
+Number of words with frequency >  1000  =  2
+----------------------------------------------------------------
+
+Number of unique words for  verb  =  2811
+Number of words with frequency >  1  =  1200
+Number of words with frequency >  5  =  350
+Number of words with frequency >  10  =  185
+Number of words with frequency >  20  =  94
+Number of words with frequency >  50  =  26
+Number of words with frequency >  100  =  8
+[(106, 'watches'), (117, 'gives'), (124, 'sits'), (130, 'takes'), (135, 'looks'), (145, 'turns'), (157, 'null'), (221, 'is')]
+Number of words with frequency >  200  =  1
+Number of words with frequency >  500  =  0
+Number of words with frequency >  1000  =  0
+----------------------------------------------------------------
+
+Number of unique words for  object  =  1233
+Number of words with frequency >  1  =  522
+Number of words with frequency >  5  =  136
+Number of words with frequency >  10  =  57
+Number of words with frequency >  20  =  26
+Number of words with frequency >  50  =  12
+Number of words with frequency >  100  =  7
+[(102, 'hand'), (113, 'head'), (142, 'her'), (180, 'it'), (193, 'him'), (270, 'someone'), (6575, 'null')]
+Number of words with frequency >  200  =  2
+Number of words with frequency >  500  =  1
+Number of words with frequency >  1000  =  1
+----------------------------------------------------------------
+
+Number of unique words for  prep  =  641
+Number of words with frequency >  1  =  293
+Number of words with frequency >  5  =  88
+Number of words with frequency >  10  =  55
+Number of words with frequency >  20  =  39
+Number of words with frequency >  50  =  23
+Number of words with frequency >  100  =  13
+[(105, 'by'), (118, 'over'), (184, 'through'), (192, 'of'), (200, 'then'), (297, 'from'), (319, 'into'), (324, 'with'), (520, 'on'), (579, 'in'), (592, 'at'), (625, 'to'), (4484, 'null')]
+Number of words with frequency >  200  =  8
+Number of words with frequency >  500  =  5
+Number of words with frequency >  1000  =  1
+----------------------------------------------------------------
+
+Number of unique words for  prepDep  =  1566
+Number of words with frequency >  1  =  688
+Number of words with frequency >  5  =  163
+Number of words with frequency >  10  =  78
+Number of words with frequency >  20  =  28
+Number of words with frequency >  50  =  8
+Number of words with frequency >  100  =  3
+[(155, 'him'), (308, 'someone'), (5963, 'null')]
+Number of words with frequency >  200  =  2
+Number of words with frequency >  500  =  1
+Number of words with frequency >  1000  =  1
+Number of unique words =  11467
+Number of words with frequency >  1  =  5227
+Number of words with frequency >  5  =  901
+Number of words with frequency >  10  =  525
+Number of words with frequency >  20  =  250
+Number of words with frequency >  50  =  100
+Number of words with frequency >  100  =  43
+[(102, u'grab'), (105, u'stop'), (107, 'window'), (108, u'star'), (109, 'by'), (119, 'over'), (122, u'give'), (124, 'people'), (129, 'them'), (132, 'man'), (150, u'open'), (152, u'smile'), (152, u'stand'), (160, u'take'), (166, u'watch'), (174, 'face'), (177, u'sit'), (179, u'gaze'), (184, 'eyes'), (186, 'through'), (186, u'turn'), (189, 'head'), (192, 'of'), (196, 'look'), (197, 'hand'), (207, 'door'), (222, 'then'), (252, u'be'), (284, 'they'), (286, 'her'), (300, 'from'), (321, 'into'), (324, 'with'), (364, 'it'), (392, 'him'), (521, 'on'), (583, 'in'), (597, 'at'), (637, 'to'), (873, 'she'), (2231, 'he'), (4675, 'someone'), (17560, 'null')]
+Number of words with frequency >  200  =  18
+Number of words with frequency >  500  =  8
+Number of words with frequency >  1000  =  3
+----------------------------------------------------------------
+
+Number of unique words for  subject  =  993
+Number of words with frequency >  1  =  448
+Number of words with frequency >  5  =  135
+Number of words with frequency >  10  =  61
+Number of words with frequency >  20  =  31
+Number of words with frequency >  50  =  10
+Number of words with frequency >  100  =  6
+[(128, 'it'), (191, 'null'), (284, 'they'), (872, 'she'), (2216, 'he'), (4083, 'someone')]
+Number of words with frequency >  200  =  4
+Number of words with frequency >  500  =  3
+Number of words with frequency >  1000  =  2
+----------------------------------------------------------------
+
+Number of unique words for  verb  =  1898
+Number of words with frequency >  1  =  961
+Number of words with frequency >  5  =  354
+Number of words with frequency >  10  =  198
+Number of words with frequency >  20  =  106
+Number of words with frequency >  50  =  41
+Number of words with frequency >  100  =  11
+[(105, u'star'), (122, u'give'), (125, u'open'), (143, u'watch'), (150, u'stand'), (153, u'take'), (168, u'look'), (176, u'sit'), (184, u'turn'), (252, u'be'), (253, u'null')]
+Number of words with frequency >  200  =  2
+Number of words with frequency >  500  =  0
+Number of words with frequency >  1000  =  0
+----------------------------------------------------------------
+
+Number of unique words for  object  =  1119
+Number of words with frequency >  1  =  529
+Number of words with frequency >  5  =  139
+Number of words with frequency >  10  =  59
+Number of words with frequency >  20  =  25
+Number of words with frequency >  50  =  11
+Number of words with frequency >  100  =  7
+[(102, 'hand'), (113, 'head'), (142, 'her'), (180, 'it'), (193, 'him'), (270, 'someone'), (6669, 'null')]
+Number of words with frequency >  200  =  2
+Number of words with frequency >  500  =  1
+Number of words with frequency >  1000  =  1
+----------------------------------------------------------------
+
+Number of unique words for  prep  =  616
+Number of words with frequency >  1  =  301
+Number of words with frequency >  5  =  91
+Number of words with frequency >  10  =  55
+Number of words with frequency >  20  =  39
+Number of words with frequency >  50  =  23
+Number of words with frequency >  100  =  13
+[(105, 'by'), (118, 'over'), (184, 'through'), (192, 'of'), (200, 'then'), (297, 'from'), (319, 'into'), (324, 'with'), (520, 'on'), (579, 'in'), (592, 'at'), (625, 'to'), (4484, 'null')]
+Number of words with frequency >  200  =  8
+Number of words with frequency >  500  =  5
+Number of words with frequency >  1000  =  1
+----------------------------------------------------------------
+
+Number of unique words for  prepDep  =  1450
+Number of words with frequency >  1  =  688
+Number of words with frequency >  5  =  176
+Number of words with frequency >  10  =  77
+Number of words with frequency >  20  =  30
+Number of words with frequency >  50  =  10
+Number of words with frequency >  100  =  3
+[(155, 'him'), (308, 'someone'), (5963, 'null')]
+Number of words with frequency >  200  =  2
+Number of words with frequency >  500  =  1
+Number of words with frequency >  1000  =  1
