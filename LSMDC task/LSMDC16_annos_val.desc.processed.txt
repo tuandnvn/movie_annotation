@@ -4480,7 +4480,7 @@
 3003	        He,     avoids,       null,       null,       null
 3003	       her,       gaze,       null,       null,       null
 3004	       she,     leaves,       null,       With,        nod
-3005	   someone,    removes,     wallet,       from,     pocket
+3005	   someone,    removes,     wallet,       from,     poc
 3006	        he, approaches,   entrance,         to,       Bank
 3007	        he,      waits,       null,    tallies,       null
 3007	    teller,       sets,       them, in front of,        him
