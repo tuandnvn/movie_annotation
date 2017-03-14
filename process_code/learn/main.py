@@ -16,11 +16,8 @@ features: dictionary mapping from clip_file to feature vectors
 '''
 
 import datetime
-import glob
 import logging
 import os
-import random
-import re
 import shutil
 import sys
 import time
@@ -46,8 +43,27 @@ def print_and_log(log_str):
     logging.info(log_str)
     
     
-def run_epoch(session, m, data_generator, label_ids, eval_op, verbose=False, is_training=True, has_output = True, summary_op = None, summary_writer = None, predict_writer = None):
-    """Runs the model on the given data."""
+def run_epoch(session, m, data_generator, label_ids, eval_op, verbose=False, is_training=True, has_output = True, 
+              summary_op = None, summary_writer = None, predict_writer = None):
+    
+    '''
+    Runs the model on the given data.
+    
+    Parameters:
+    -----------
+    session:        Tensorflow session
+    m:              Model to run on
+    data_generator: Generate a batch of data, see  :meth:`read_utils.read_feature_vectors`
+    label_ids:      Map from a clip file name to list of ids
+    eval_op:        Operator for evaluation (train/test/predict)
+    
+    
+    
+    Return:
+    -------
+    average_cost:   If has_output, it is the average cost for each data sample
+    '''
+    
     costs = 0
     evals = np.zeros(len(m.dictionaries))
     cost_iters = 0
@@ -61,7 +77,8 @@ def run_epoch(session, m, data_generator, label_ids, eval_op, verbose=False, is_
     for step, (x, y, z) in enumerate( gothrough( data_generator, label_ids, m.batch_size, m.num_steps) ):
         feed_dict = {}
         feed_dict[m.input_data] = x
-        feed_dict[m.targets] = y
+        if has_output:
+            feed_dict[m.targets] = y
         feed_dict[m.input_lengths] = z
         
         for i in xrange(len(m.initial_state)):
@@ -139,9 +156,6 @@ def run_epoch(session, m, data_generator, label_ids, eval_op, verbose=False, is_
             
             print_and_log("Preposition accuracy = %.5f" % (evals[4] / eval_iters))
         
-        
-                
-    
     if has_output:    
         return np.exp(costs / cost_iters)
 
