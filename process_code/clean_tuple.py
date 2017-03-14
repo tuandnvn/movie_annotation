@@ -106,19 +106,24 @@ def printStatistics( tuples ):
             slot_counters[i].update((t[i + 1], ))
         
     print 'Number of unique words = ', len(counter)
+    
+    total_weight = sum(counter[t] for t in counter if counter[t])
     for value in [1, 5, 10, 20, 50, 100, 200, 500, 1000]:
         l = [t for t in counter if counter[t] > value]
-        print 'Number of words with frequency > ', value, ' = ', len(l)
+        weight = sum(counter[t] for t in counter if counter[t] > value)
+        print 'Number of words with frequency > ', value, ' = ', len(l), ', weight over total = ', float(weight) / total_weight
         if value == 100:
             print sorted((counter[u], u) for u in l)
             
     for i, t in enumerate(['subject', 'verb', 'object', 'prep', 'prepDep']):
         print '----------------------------------------------------------------\n'
         
+        total_weight = sum(slot_counters[i][t] for t in slot_counters[i] if slot_counters[i][t])
         print 'Number of unique words for ', t, ' = ', len(slot_counters[i])
         for value in [1, 5, 10, 20, 50, 100, 200, 500, 1000]:
             l = [t for t in slot_counters[i] if slot_counters[i][t] > value]
-            print 'Number of words with frequency > ', value, ' = ', len(l)
+            weight = sum(slot_counters[i][t] for t in slot_counters[i] if slot_counters[i][t] > value)
+            print 'Number of words with frequency > ', value, ' = ', len(l), ', weight over total = ', float(weight) / total_weight
             if value == 100:
                 print sorted((slot_counters[i][u], u) for u in l)
                 
