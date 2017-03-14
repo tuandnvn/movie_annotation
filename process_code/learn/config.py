@@ -13,10 +13,10 @@ class NoTreeConfig(object):
                             # might make the cost explodes
     max_grad_norm = 5       # The maximum permissible norm of the gradient
     num_layers = 1          # Number of LSTM layers
-    num_steps = 20          # Divide the data into num_steps segment 
+    num_steps = 100          # Divide the data into num_steps segment 
     hidden_size = 200       # the number of LSTM units
-    max_epoch = 10          # The number of epochs trained with the initial learning rate
-    max_max_epoch = 500     # Number of running epochs
+    max_epoch = 5          # The number of epochs trained with the initial learning rate
+    max_max_epoch = 50     # Number of running epochs
     keep_prob = 0.8         # Drop out keep probability, = 1.0 no dropout
     lr_decay = 0.980         # Learning rate decay
     batch_size = 100         # We could actually still use batch_size for convenient

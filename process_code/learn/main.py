@@ -134,6 +134,10 @@ def run_epoch(session, m, data_generator, label_ids, eval_op, verbose=False, is_
                 
             else:
                 y_pred = eval_val
+
+            #if verbose and step % 30 == 0:
+            #    print y_pred
+            #    print y
             
             # Write content of y_pred to the predict_writer
             if predict_writer != None:
@@ -291,6 +295,16 @@ if __name__ == '__main__':
         if attr[:2] != '__':
             log_str = "%s = %s" % (attr, getattr(eval_config, attr))
             logging.info(log_str)
+
+    if mode == TRAIN:
+        train_label_ids = read_output_labels(ORIGINAL_ANNOTATE_TRAIN_FILE, TUPLE_TRAIN_FILE, vocab_dict)
+        val_label_ids = read_output_labels(ORIGINAL_ANNOTATE_VAL_FILE, TUPLE_VAL_FILE, vocab_dict)
+
+    if mode == VALIDATE:
+        val_label_ids = read_output_labels(ORIGINAL_ANNOTATE_VAL_FILE, TUPLE_VAL_FILE, vocab_dict)
+        
+    if mode == TEST:
+        test_label_ids = read_output_labels(ORIGINAL_ANNOTATE_TEST_FILE, TUPLE_TEST_FILE, vocab_dict)
             
     with tf.Graph().as_default(), tf.Session() as session:
         initializer = tf.random_uniform_initializer(-config.init_scale,
@@ -327,73 +341,69 @@ if __name__ == '__main__':
             print('-------- Setup mpredict model ----------')
             with tf.variable_scope("model", reuse=True, initializer=initializer):
                 mpredict = LSTM_TREE_CRF(is_training=False, has_output = False, config=eval_config)
-            
+        
+        # Create data generator
+        def create_data_generator( mode ):
+            if mode == TRAIN:
+                feature_generator = read_feature_vectors ( train_dir )
+
+            if mode == VALIDATE:
+                feature_generator = read_feature_vectors ( val_dir )
+                
+            if mode == TEST:
+                feature_generator = read_feature_vectors ( test_dir )
+                
+            if mode == BLIND_TEST:
+                feature_generator = read_feature_vectors ( blindtest_dir )
+            return feature_generator
+
         if mode == TRAIN:
             tf.global_variables_initializer().run()
 
             print_and_log('----------------TRAIN---------------')
              
             for i in range(config.max_max_epoch):
-                try:
-                    # Create data generator
-                    if mode == TRAIN:
-                        train_feature_generator = read_feature_vectors ( train_dir )
-                        
-                        train_label_ids = read_output_labels(ORIGINAL_ANNOTATE_TRAIN_FILE, TUPLE_TRAIN_FILE, vocab_dict)
-                        
-                        val_feature_generator = read_feature_vectors ( val_dir )
-                        
-                        val_label_ids = read_output_labels(ORIGINAL_ANNOTATE_VAL_FILE, TUPLE_VAL_FILE, vocab_dict)
-                    
-                    if mode == VALIDATE:
-                        val_feature_generator = read_feature_vectors ( val_dir )
-                        
-                        val_label_ids = read_output_labels(ORIGINAL_ANNOTATE_VAL_FILE, TUPLE_VAL_FILE, vocab_dict)
-                        
-                    if mode == TEST:
-                        test_feature_generator = read_feature_vectors ( test_dir )
-                        
-                        test_label_ids = read_output_labels(ORIGINAL_ANNOTATE_TEST_FILE, TUPLE_TEST_FILE, vocab_dict)
-                        
-                    if mode == BLIND_TEST:
-                        blindtest_feature_generator = read_feature_vectors ( blindtest_dir )
+                
+                print_and_log('-------------------------------')
+                start_time = time.time()
+                lr_decay = config.lr_decay ** max(i - config.max_epoch, 0.0)
+                m.assign_lr(session, config.learning_rate * lr_decay)
 
+                print_and_log("Epoch: %d Learning rate: %.3f" % (i + 1, session.run(m.lr)))
 
-                    print_and_log('-------------------------------')
+                train_feature_generator = create_data_generator(TRAIN)
+
+                train_perplexity = run_epoch(session, m, train_feature_generator, 
+                                             train_label_ids, m.train_op,
+                                           verbose=True)
+                print_and_log("Epoch: %d Train Perplexity: %s" % (i + 1, str(train_perplexity)))
+                print_and_log("Time %.3f" % (time.time() - start_time) )
+                print_and_log('-------------------------------') 
+
+                if i % config.test_epoch == 0:
+                    print_and_log('----------Intermediate test -----------')  
+                    # Run test on train
+                    print_and_log('Run model on train data')
+                    train_feature_generator = create_data_generator(TRAIN)
+                    test_perplexity = run_epoch(session, m_intermediate_test, 
+                        train_feature_generator , 
+                                                train_label_ids, m_intermediate_test.test_op, 
+                                                is_training=False, verbose = False)
+                    print_and_log('Run model on validate data')
+                    val_feature_generator = create_data_generator(VALIDATE)
+                    test_perplexity = run_epoch(session, m_intermediate_test, val_feature_generator, 
+                                                val_label_ids, m_intermediate_test.test_op, 
+                                                is_training=False, verbose = True)
+                
+                if i % config.save_epoch == 0:
                     start_time = time.time()
-                    lr_decay = config.lr_decay ** max(i - config.max_epoch, 0.0)
-                    m.assign_lr(session, config.learning_rate * lr_decay)
-
-                    print_and_log("Epoch: %d Learning rate: %.3f" % (i + 1, session.run(m.lr)))
-
-                    train_perplexity = run_epoch(session, m, train_feature_generator, 
-                                                 train_label_ids, m.train_op,
-                                               verbose=True)
-                    print_and_log("Epoch: %d Train Perplexity: %s" % (i + 1, str(train_perplexity)))
+                    _model_path = m.saver.save(session, model_path)
+                    print_and_log("Model saved in file: %s" % _model_path)
                     print_and_log("Time %.3f" % (time.time() - start_time) )
-                    print_and_log('-------------------------------') 
-
-                    if i % config.test_epoch == 0:
-                        print_and_log('----------Intermediate test -----------')  
-                        # Run test on train
-                        print_and_log('Run model on train data')
-                        test_perplexity = run_epoch(session, m_intermediate_test, train_feature_generator, 
-                                                    train_label_ids, m_intermediate_test.test_op, 
-                                                    is_training=False, verbose = False)
-                        print_and_log('Run model on validate data')
-                        test_perplexity = run_epoch(session, m_intermediate_test, val_feature_generator, 
-                                                    val_label_ids, m_intermediate_test.test_op, 
-                                                    is_training=False, verbose = True)
-                    
-                    if i % config.save_epoch == 0:
-                        start_time = time.time()
-                        _model_path = m.saver.save(session, model_path)
-                        print_and_log("Model saved in file: %s" % _model_path)
-                        print_and_log("Time %.3f" % (time.time() - start_time) )
-                except ValueError:
-                    print_and_log("Value error, reload the most recent saved model")
-                    m.saver.restore(session, model_path)
-                    break
+                #except ValueError:
+                #    print_and_log("Value error, reload the most recent saved model")
+                #    m.saver.restore(session, model_path)
+                #    break
             
             _model_path = m.saver.save(session, model_path)
             print_and_log("Model saved in file: %s" % _model_path)
@@ -406,6 +416,7 @@ if __name__ == '__main__':
             # Run on the validating data
             print_and_log('--------------VALIDATE--------------')  
             print_and_log('Run model on validate data')
+            val_feature_generator = create_data_generator(VALIDATE)
             test_perplexity = run_epoch(session, mtest, val_feature_generator, 
                                         val_label_ids, mtest.test_op, 
                                         is_training=False, verbose=True)
@@ -413,6 +424,7 @@ if __name__ == '__main__':
         if mode == TEST:
             print_and_log('-----------PUBLIC TEST--------------')  
             print_and_log('Run model on test data')
+            test_feature_generator = create_data_generator(TEST)
             test_perplexity = run_epoch(session, mtest, test_feature_generator, 
                                         test_label_ids, mtest.test_op, 
                                         is_training=False, verbose=True)
@@ -420,6 +432,7 @@ if __name__ == '__main__':
         if mode == BLIND_TEST:
             print_and_log('-----------BLIND TEST--------------')  
             print_and_log('Run model on blind-test data')
+            blindtest_feature_generator = create_data_generator(BLIND_TEST)
             run_epoch(session, mpredict, blindtest_feature_generator, 
                                         None, mpredict.test_op, 
                                         is_training=False, verbose=True, 

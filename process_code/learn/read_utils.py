@@ -76,14 +76,20 @@ def read_feature_vectors( directory ):
         ff = feature_file.split("/")[-1]
         feature_clip_and_files.append( (ff[:- len(extension)], feature_file) )
     
-    # Clip feature should be generated according to the alphanumerical order 
+    # Clip feature should be generated according to the alphanumerical order
+    counter = 0
+
     for clip_file, feature_file_name in feature_clip_and_files:
         try:
             array = np.load(feature_file_name)
             
             yield (clip_file, array)
+            counter += 1
         except:
             print 'Load file ', clip_file, ' has problem!!!'
+
+        if counter > 20000:
+            return
 
 def extract( line ):
     p = re.compile('(?P<sentence>\d+)(\s*)?(?P<subject>\w+[\s\w]?)(,\s*)?(?P<verb>[\s\w]+)(,\s*)?(?P<object>[\s\w]+)(,\s*)?(?P<prep>[\s\w]+)?(,\s*)?(?P<prepDep>[\s\w]+)?')
@@ -184,11 +190,14 @@ def read_output_labels ( original_file, tuple_file, ds ):
             sentence = int(result.group('sentence'))
         
             values = dict([ (t, result.group(t).lower()) if result.group(t) != None else 'null' for t in ALL_SLOTS ])
+
+            #sprint values
             
             # Turn token in values to ids
             # If token is not found, turn its to null's id
             ids = [ds[t].token2id[values[t]] if values[t] in ds[t].token2id else ds[t].token2id['null'] for t in ALL_SLOTS]
-             
+            
+            #print ids
             if sentence in clip_name_map:
                 labels[clip_name_map[sentence]].append(ids)
             

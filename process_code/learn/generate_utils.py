@@ -53,6 +53,11 @@ def gothrough(feature_generator, labels, batch_size, max_steps):
                         x = np.zeros( (batch_size, max_steps, data_point_size), dtype=np.float32 )
                         y = np.zeros( (batch_size, num_labels), dtype=np.int32 )
                         z = np.array( lengths, dtype = np.int32 )
+
+                        # Set features
+                        for i, feature in  enumerate(features):
+                             x[i, :lengths[i], :] = features[i]
+                             y[i, :] =  generated_lbls[i]
                         
                         # Reset the accumulators
                         features = []
@@ -70,6 +75,9 @@ def gothrough(feature_generator, labels, batch_size, max_steps):
                 if len(features) == batch_size:
                     x = np.zeros( (batch_size, max_steps, data_point_size), dtype=np.float32 )
                     z = np.array( lengths, dtype = np.int32 )
+
+                    for i, feature in  enumerate(features):
+                        x[i, :lengths[i], :] = features[i]
                     
                     # Reset the accumulators
                     features = []
