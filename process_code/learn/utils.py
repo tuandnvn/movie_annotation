@@ -12,7 +12,7 @@ VALIDATE = 'VALIDATE'
 TEST = 'TEST'
 BLIND_TEST = 'BLIND_TEST'
 
-ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 CODE_DIR = os.path.join(ROOT_DIR, "process_code")
 MODEL_DIR = os.path.join(ROOT_DIR, 'models')
 

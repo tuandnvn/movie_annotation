@@ -7,10 +7,53 @@ import glob
 import os
 import re
 
-from collections import defaultdict
-from gensim.corpora.dictionary import Dictionary
+from collections import defaultdict, Counter
 import numpy as np
-from utils import ALL_SLOTS
+from utils import ALL_SLOTS, PREP_DEP
+
+class Dictionary(object):
+    def __init__(self):
+        self.counter = Counter()
+        self.token2id = {}
+
+    def add_document(self, document):
+        '''
+        Parameters:
+        document: List of string
+        '''
+        self.counter.update(set(document))
+        for word in document:
+            if word not in self.token2id:
+                self.token2id[word] = len(self.token2id)
+
+    def add_documents(self, documents):
+        for document in documents:
+            self.add_document(document)
+
+    def filter_extremes(self, no_below=10, no_above=1):
+        original_length = len(self.counter)
+
+        tokens = self.counter.keys()
+
+        total_count = sum (self.counter.values())
+
+        for token in tokens:
+            if self.counter[token] < no_below or self.counter[token] > no_above *  total_count:
+                 del self.counter[token]
+                 del self.token2id[token]
+
+    def compactify( self ):
+        for id, token in enumerate(sorted(self.token2id)):
+            self.token2id[token] = id
+
+    def __str__ (self):
+        stuffs = []
+        for token in sorted(self.token2id):
+            stuffs.append(token + ' : ' + str(self.token2id[token]))
+        return ', '.join(stuffs) 
+
+    def __len__(self):
+        return len(self.token2id)
 
 
 def read_feature_vectors( directory ):
@@ -42,7 +85,12 @@ def read_feature_vectors( directory ):
         except:
             print 'Load file ', clip_file, ' has problem!!!'
 
+def extract( line ):
+    p = re.compile('(?P<sentence>\d+)(\s*)?(?P<subject>\w+[\s\w]?)(,\s*)?(?P<verb>[\s\w]+)(,\s*)?(?P<object>[\s\w]+)(,\s*)?(?P<prep>[\s\w]+)?(,\s*)?(?P<prepDep>[\s\w]+)?')
 
+    result = p.match( line.strip() )
+
+    return result
 
 def create_vocabulary( tuple_file ):
     '''
@@ -62,24 +110,29 @@ def create_vocabulary( tuple_file ):
     for t in ALL_SLOTS:
         ds[t] = Dictionary()
     
-    p = re.compile('(?P<sentence>\d+)(\t\s*)?(?P<subject>[\s\w]+)(,\s*)?(?P<verb>[\s\w]+)(,\s*)?(?P<object>[\s\w]+)(,\s*)?(?P<prep>[\s\w]+)?(,\s*)?(?P<prepDep>[\s\w]+)?')
-    
     documents = {}
     for t in ALL_SLOTS:
         documents[t] = []
         
     with open(tuple_file, 'r') as fh:
         for line in fh:
-            result = p.match( line.strip() )
+            result = extract(line)
             
             for t in ALL_SLOTS:
-                documents[t].append(result.group(t).lower() if result.group(t) != None else 'null')
+                u = [result.group(t).lower() if result.group(t) != None else 'null']
+                documents[t].append(u)
+
     
     for t in ALL_SLOTS:
-        ds[t].add_documents([documents[t]])
-                
-        ds[t].filter_extremes(no_below=20)
+        ds[t].add_documents(documents[t])
+
+        print ds[t].counter['null']
+        
+        ds[t].filter_extremes(no_below=20, no_above=1)
         ds[t].compactify()
+
+        print len(ds[t])
+        
     
     return ds
             
@@ -119,11 +172,14 @@ def read_output_labels ( original_file, tuple_file, ds ):
     clip_name_map = read_original_file( original_file )
     
     labels = defaultdict(list)
-    p = re.compile('(?P<sentence>\d+)(\t\s*)?(?P<subject>[\s\w]+)(,\s*)?(?P<verb>[\s\w]+)(,\s*)?(?P<object>[\s\w]+)(,\s*)?(?P<prep>[\s\w]+)?(,\s*)?(?P<prepDep>[\s\w]+)?')
-    
+
+    #for t in ds:
+    #    print t
+    #    print ds[t]
+
     with open(tuple_file, 'r') as fh:
         for line in fh:
-            result = p.match( line.strip() )
+            result = extract(line)
             
             sentence = int(result.group('sentence'))
         
@@ -131,7 +187,7 @@ def read_output_labels ( original_file, tuple_file, ds ):
             
             # Turn token in values to ids
             # If token is not found, turn its to null's id
-            ids = [ds[t][values[t]] if values[t] in ds[t] else ds[t]['null'] for t in ALL_SLOTS]
+            ids = [ds[t].token2id[values[t]] if values[t] in ds[t].token2id else ds[t].token2id['null'] for t in ALL_SLOTS]
              
             if sentence in clip_name_map:
                 labels[clip_name_map[sentence]].append(ids)

@@ -3,7 +3,7 @@ Created on Mar 4, 2017
 
 @author: Tuan
 '''
-from learn.crf_tree import CRFTree
+from crf_tree import CRFTree
 from utils import SUBJECT, OBJECT, PREP, ALL_SLOTS, VERB, PREP_DEP, START
 
 
@@ -31,10 +31,10 @@ class TreeConfig(NoTreeConfig):
     def __init__(self, gensim_dictionaries):
         NoTreeConfig.__init__(self)
         
-        # Create tree 
+        # Create tree
         dictionaries = {}
         for key in ALL_SLOTS:
-            dictionaries[key] = gensim_dictionaries[key].word2id
+            dictionaries[key] = gensim_dictionaries[key].token2id
         
         '''
         SUJBECT ------  VERB  -------  OBJECT 
@@ -62,7 +62,7 @@ class TreeWithStartConfig(NoTreeConfig):
         # Create tree 
         dictionaries = {}
         for key in ALL_SLOTS:
-            dictionaries[key] = gensim_dictionaries[key].word2id
+            dictionaries[key] = gensim_dictionaries[key].token2id
         dictionaries[START] = { 'start' : 0 }
         
         '''

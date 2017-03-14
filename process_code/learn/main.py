@@ -21,17 +21,18 @@ import os
 import shutil
 import sys
 import time
-
-import argparse
-from gensim.corpora.dictionary import Dictionary
-
-from learn.config import TreeConfig
-from learn.generate_utils import gothrough
-from learn.lstm_treecrf import LSTM_TREE_CRF
-from learn.read_utils import read_feature_vectors, create_vocabulary, \
-    read_output_labels
 import numpy as np
 import tensorflow as tf
+import argparse
+import pickle
+
+
+from config import TreeConfig
+from generate_utils import gothrough
+from lstm_treecrf import LSTM_TREE_CRF
+from read_utils import read_feature_vectors, create_vocabulary, \
+    read_output_labels
+
 from utils import FEATURE_TRAIN_DIR, FEATURE_TEST_DIR, FEATURE_VAL_DIR, \
     FEATURE_BLINDTEST_DIR, TUPLE_TRAIN_FILE, ORIGINAL_ANNOTATE_TRAIN_FILE, \
     ORIGINAL_ANNOTATE_TEST_FILE, TUPLE_TEST_FILE, ORIGINAL_ANNOTATE_VAL_FILE, \
@@ -169,13 +170,18 @@ if __name__ == '__main__':
                                 help = "Store mode. Pick between TRAIN, VALIDATE, TEST and BLIND_TEST. TRAIN actually means TRAIN + VALIDATE" )
     
     parser.add_argument('-m', '--model_dir',  action='store',
-                                help = "Where to save the model or to load the model. By default, the model and its auxiliary files are put in /logs/run_TIMESTAMP" )
+                                help = "Where to save the model or to load the model. By default, the model is put in /logs/run_TIMESTAMP" )
+
+    parser.add_argument('-d', '--dict_dir',  action='store',
+                                help = "Where to save vocab dicts or to load them. By default, vocab dict files are put in /logs/run_TIMESTAMP" )
     
     args = parser.parse_args()
     
     mode = args.mode
     
     log_dir = args.model_dir
+
+    dict_dir = args.dict_dir
     
     if mode == TRAIN:
         current_time = datetime.datetime.now()
@@ -200,15 +206,26 @@ if __name__ == '__main__':
         '''
         Create gensim dictionary from the tokens in TUPLE_TRAIN_FILE
         '''
-        vocab_dict = create_vocabulary(TUPLE_TRAIN_FILE)
+        vocab_dict = {} 
         
-        dict_dir = os.path.join(log_dir, 'dict')
+        if dict_dir == None:
+            dict_dir = os.path.join(log_dir, 'dict')
         
-        os.makedirs(dict_dir)
+        if not os.path.isdir(dict_dir):
+            os.makedirs(dict_dir)
         
-        for slot in vocab_dict:
+        for slot in ALL_SLOTS:
             dict_file = os.path.join( dict_dir, slot + '.dict')
-            vocab_dict[slot].save(dict_file)
+            if os.path.isfile(dict_file):
+                with open(dict_file, 'rb') as fh:
+                    vocab_dict[slot] = pickle.load(fh)
+            else:
+                if vocab_dict == {}:
+                    vocab_dict = create_vocabulary(TUPLE_TRAIN_FILE)
+
+                print 'Save vocab_dict of ', slot, ' into ',  dict_file
+                with open(dict_file, 'wb') as fh:
+                    pickle.dump(vocab_dict[slot], fh)
     
     if mode in [VALIDATE, TEST, BLIND_TEST]:
         if log_dir:
@@ -216,14 +233,20 @@ if __name__ == '__main__':
             
             print('Test using model ' + model_path)
             
-            dict_dir = os.path.join(log_dir, 'dict')
+            if dict_dir == None:
+                dict_dir = os.path.join(log_dir, 'dict')
             
             vocab_dict = {}
             for slot in ALL_SLOTS:
                 dict_file = os.path.join( dict_dir, slot + '.dict')
                 
-                vocab_dict[slot] = Dictionary()
-                vocab_dict[slot].load( dict_file )
+                try:
+                    with open(dict_file, 'rb') as fh:
+                        vocab_dict[slot] = pickle.load(fh)
+
+                    print 'Load vocab_dict of ', slot, ' from ',  dict_file
+                except:
+                    print 'Load vocab_dict of ', slot, ' has exception!'
         else:
             sys.exit("learning.py -t TEST -m model_path")
             
@@ -234,27 +257,7 @@ if __name__ == '__main__':
     blindtest_dir = FEATURE_BLINDTEST_DIR
     
     
-    if mode == TRAIN:
-        train_feature_generator = read_feature_vectors ( train_dir )
-        
-        train_label_ids = read_output_labels(ORIGINAL_ANNOTATE_TRAIN_FILE, TUPLE_TRAIN_FILE, vocab_dict)
-        
-        val_feature_generator = read_feature_vectors ( val_dir )
-        
-        val_label_ids = read_output_labels(ORIGINAL_ANNOTATE_VAL_FILE, TUPLE_VAL_FILE, vocab_dict)
     
-    if mode == VALIDATE:
-        val_feature_generator = read_feature_vectors ( val_dir )
-        
-        val_label_ids = read_output_labels(ORIGINAL_ANNOTATE_VAL_FILE, TUPLE_VAL_FILE, vocab_dict)
-        
-    if mode == TEST:
-        test_feature_generator = read_feature_vectors ( test_dir )
-        
-        test_label_ids = read_output_labels(ORIGINAL_ANNOTATE_TEST_FILE, TUPLE_TEST_FILE, vocab_dict)
-        
-    if mode == BLIND_TEST:
-        blindtest_feature_generator = read_feature_vectors ( blindtest_dir )
     
     print 'Turn training feature vectors into batch form for LSTM training'
     
@@ -299,7 +302,7 @@ if __name__ == '__main__':
         print('-------- Setup m model ---------')
         with tf.variable_scope("model", reuse=None, initializer=initializer):
             config.tree.initiate_crf()
-            m = LSTM_TREE_CRF(is_training=True, config=config)
+            m = LSTM_TREE_CRF(is_training=True, has_output = True, config=config)
         
         '''
         Model for evaluating over training data
@@ -307,7 +310,7 @@ if __name__ == '__main__':
         print('-------- Setup m_intermediate_test model ---------')
         with tf.variable_scope("model", reuse=True, initializer=initializer):
             intermediate_config.tree.initiate_crf()
-            m_intermediate_test = LSTM_TREE_CRF(is_training=False, config=intermediate_config)
+            m_intermediate_test = LSTM_TREE_CRF(is_training=False, has_output = True, config=intermediate_config)
         
         '''
         Model for evaluating over test data
@@ -315,7 +318,7 @@ if __name__ == '__main__':
         print('-------- Setup mtest model ----------')
         with tf.variable_scope("model", reuse=True, initializer=initializer):
             eval_config.tree.initiate_crf()
-            mtest = LSTM_TREE_CRF(is_training=False, config=eval_config)
+            mtest = LSTM_TREE_CRF(is_training=False, has_output = True, config=eval_config)
         
         if mode == BLIND_TEST:
             '''
@@ -332,6 +335,30 @@ if __name__ == '__main__':
              
             for i in range(config.max_max_epoch):
                 try:
+                    # Create data generator
+                    if mode == TRAIN:
+                        train_feature_generator = read_feature_vectors ( train_dir )
+                        
+                        train_label_ids = read_output_labels(ORIGINAL_ANNOTATE_TRAIN_FILE, TUPLE_TRAIN_FILE, vocab_dict)
+                        
+                        val_feature_generator = read_feature_vectors ( val_dir )
+                        
+                        val_label_ids = read_output_labels(ORIGINAL_ANNOTATE_VAL_FILE, TUPLE_VAL_FILE, vocab_dict)
+                    
+                    if mode == VALIDATE:
+                        val_feature_generator = read_feature_vectors ( val_dir )
+                        
+                        val_label_ids = read_output_labels(ORIGINAL_ANNOTATE_VAL_FILE, TUPLE_VAL_FILE, vocab_dict)
+                        
+                    if mode == TEST:
+                        test_feature_generator = read_feature_vectors ( test_dir )
+                        
+                        test_label_ids = read_output_labels(ORIGINAL_ANNOTATE_TEST_FILE, TUPLE_TEST_FILE, vocab_dict)
+                        
+                    if mode == BLIND_TEST:
+                        blindtest_feature_generator = read_feature_vectors ( blindtest_dir )
+
+
                     print_and_log('-------------------------------')
                     start_time = time.time()
                     lr_decay = config.lr_decay ** max(i - config.max_epoch, 0.0)

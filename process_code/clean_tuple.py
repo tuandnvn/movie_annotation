@@ -151,7 +151,7 @@ if __name__ == "__main__":
     verbose = args.verbose
     limit = int(args.limit)
     
-    p = re.compile('(?P<sentence>\d+)(\t\s*)?(?P<subject>[\s\w]+)(,\s*)?(?P<verb>[\s\w]+)(,\s*)?(?P<object>[\s\w]+)(,\s*)?(?P<prep>[\s\w]+)?(,\s*)?(?P<prepDep>[\s\w]+)?')
+    p = re.compile('(?P<sentence>\d+)(\s*)?(?P<subject>\w+[\s\w]?)(,\s*)?(?P<verb>[\s\w]+)(,\s*)?(?P<object>[\s\w]+)(,\s*)?(?P<prep>[\s\w]+)?(,\s*)?(?P<prepDep>[\s\w]+)?')
     
     outputs = []
     

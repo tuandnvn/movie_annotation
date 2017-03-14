@@ -33,7 +33,7 @@ def expand( tensor, size, axis = 1 ):
 
 # x -> (size, x)
 def expand_first( tensor, size ):
-    return tf.pack( [tensor for _ in xrange(size)] )
+    return tf.stack([tensor for _ in xrange(size)])
 
 
 class CRFTree(object):
@@ -246,18 +246,22 @@ class CRFTree(object):
         logit_correct =  numpy array of size = batch_size
         '''
         
-        logit_correct = None
+        logit_correct = tf.zeros(batch_size)
+
         
         for source in self.edges:
             source_id = self.node_type_indices[source]
+            target_src = targets[:, source_id]
+
             for target in self.edges[source]:
                 sorted_edge = tuple(sorted((source, target)))
                 # Only count 1 for each edge
                 if (source, target) == sorted_edge:
                     target_id = self.node_type_indices[target]
-                    logit_correct += crf_weight * gather_2d ( self.crf[sorted_edge], tf.transpose(tf.pack([targets[:, source_id], targets[:, target_id]])))
+                    target_target = targets[:, target_id]
+                    logit_correct += crf_weight * gather_2d ( self.crf[sorted_edge], tf.transpose(tf.stack([target_src, target_target])))
             
-            logit_correct += gather_2d(logits[source], tf.transpose(tf.pack([tf.range(batch_size), targets[:, source_id]])))
+            logit_correct += gather_2d(logits[source], tf.transpose(tf.stack([tf.range(batch_size), target_src])))
 
         return logit_correct
     
@@ -318,7 +322,7 @@ class CRFTree(object):
                         log_edge = crf_weight * A + expand(logit, size_source, axis = 2)
                     
                     # (batch_size, size_source)
-                    best_combinations[collapsed_node] = tf.cast(tf.argmax(log_edge, 1), np.int32)
+                    best_combinations[collapsed_node] = tf.cast(tf.argmax(log_edge, axis = 1), np.int32)
                     
                     logits[selected_node] += tf.reduce_max(log_edge, 1)
             
@@ -355,7 +359,7 @@ class CRFTree(object):
                         q = np.array([[i for _ in xrange(size_remaining)] for i in xrange(batch_size)])
                         
                         # (batch_size x #Subject, 2)
-                        indices = tf.reshape( tf.transpose( tf.pack ( [q, recalculated_best_combinations[selected_node_index] ]), [1, 2, 0] ), [-1, 2]) 
+                        indices = tf.reshape( tf.transpose( tf.stack ( [q, recalculated_best_combinations[selected_node_index] ]), [1, 2, 0] ), [-1, 2]) 
                         
                         for collapsed_node in collapsed_nodes:
                             collapsed_index = self.node_type_indices[collapsed_node]
@@ -363,11 +367,11 @@ class CRFTree(object):
                                                                  indices, (batch_size, size_remaining))
             
                     # batch_size
-                    best_best_values = tf.argmax(logits[remaining_node], 1)
+                    best_best_values = tf.argmax(logits[remaining_node], axis = 1)
                     
-                    indices = tf.transpose( tf.pack([range(batch_size), best_best_values]))
+                    indices = tf.transpose( tf.stack([range(batch_size), best_best_values]))
                     
-                    out = tf.transpose(tf.pack([gather_2d( recalculated_best_combinations[t], indices ) for t in xrange(len(self.node_types))]))
+                    out = tf.transpose(tf.stack([gather_2d( recalculated_best_combinations[t], indices ) for t in xrange(len(self.node_types))]))
                     
                     return out
                 else:
