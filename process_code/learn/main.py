@@ -141,8 +141,10 @@ def run_epoch(session, m, data_generator, label_ids, eval_op, verbose=False, is_
             
             # Write content of y_pred to the predict_writer
             if predict_writer != None:
-                pass
-    
+                for i in xrange(y_pred.shape[0]):
+                    out_ids = y_pred[i,:]
+                    
+                    
     '''
     Print performance for each slot
     '''

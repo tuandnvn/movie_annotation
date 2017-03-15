@@ -26,17 +26,21 @@ class NoTreeConfig(object):
     n_input = 500
     hidden_layer = False
     crf_weight = 1
+    
+    def __init__(self, gensim_dictionaries):
+        self.node_types = ALL_SLOTS
+        self.dictionaries = {}
+        for key in self.node_types:
+            self.dictionaries[key] = gensim_dictionaries[key].token2id
+            
+            
         
 class TreeConfig(NoTreeConfig):
     crf_weight = 1
     
     def __init__(self, gensim_dictionaries):
-        NoTreeConfig.__init__(self)
+        NoTreeConfig.__init__(self, gensim_dictionaries)
         
-        # Create tree
-        dictionaries = {}
-        for key in ALL_SLOTS:
-            dictionaries[key] = gensim_dictionaries[key].token2id
         
         '''
         SUJBECT ------  VERB  -------  OBJECT 
@@ -52,20 +56,18 @@ class TreeConfig(NoTreeConfig):
                   PREP: [VERB, PREP_DEP],
                   PREP_DEP: [PREP]  }
         
-        self.tree = CRFTree( ALL_SLOTS, dictionaries, edges )
+        self.tree = CRFTree( self.node_types, self.dictionaries, edges )
         
 class TreeWithStartConfig(NoTreeConfig):
     crf_weight = 1
     
     def __init__(self, gensim_dictionaries):
         
-        NoTreeConfig.__init__(self)
+        NoTreeConfig.__init__(self, gensim_dictionaries)
         
+        self.node_types.append(START)
         # Create tree 
-        dictionaries = {}
-        for key in ALL_SLOTS:
-            dictionaries[key] = gensim_dictionaries[key].token2id
-        dictionaries[START] = { 'start' : 0 }
+        self.dictionaries[START] = { 'start' : 0 }
         
         '''
                        START
@@ -86,4 +88,4 @@ class TreeWithStartConfig(NoTreeConfig):
                   PREP: [VERB, PREP_DEP],
                   PREP_DEP: [PREP]  }
         
-        self.tree = CRFTree( [START] + ALL_SLOTS, dictionaries, edges )
+        self.tree = CRFTree( self.node_types, self.dictionaries, edges )

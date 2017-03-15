@@ -59,8 +59,8 @@ def gothrough(feature_generator, labels, batch_size, max_steps):
 
                         # Set features
                         for i, feature in  enumerate(features):
-                             x[i, :lengths[i], :] = features[i][:lengths[i], :]
-                             y[i, :] =  generated_lbls[i]
+                            x[i, :lengths[i], :] = feature[:lengths[i], :]
+                            y[i, :] =  generated_lbls[i]
                         
                         # Reset the accumulators
                         features = []

@@ -42,13 +42,14 @@ class LSTM_TREE_CRF(object):
         self.size = size = config.hidden_size
 
         self.crf_weight = crf_weight = config.crf_weight
-        self.node_types = config.tree.node_types
+        self.node_types = config.node_types
+        
         self.hidden_layer = hidden_layer = config.hidden_layer
 
         print 'Use hidden_layer = ', hidden_layer
 
         # self.dictionaries is dict of dict
-        self.dictionaries = config.tree.dictionaries
+        self.dictionaries = config.dictionaries
 
         self.n_labels = len(self.node_types)
         
