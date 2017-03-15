@@ -27,7 +27,7 @@ import argparse
 import pickle
 
 
-from config import TreeConfig
+from config import TreeConfig, NoTreeConfig
 from generate_utils import gothrough
 from lstm_treecrf import LSTM_TREE_CRF
 from read_utils import read_feature_vectors, create_vocabulary, \
@@ -149,17 +149,17 @@ def run_epoch(session, m, data_generator, label_ids, eval_op, verbose=False, is_
     if not is_training:
         if has_output:
             print_and_log("Number of correct predictions = %d, Percentage = %.3f" % 
-                          (total_correct_pred, total_correct_pred/ (eval_iters * m.batch_size) ))
+                          (total_correct_pred, 1.0 * total_correct_pred/ (eval_iters * m.batch_size) ))
             
             print_and_log("Subject accuracy = %.5f" % (evals[0] / eval_iters))
             
-            print_and_log("Object accuracy = %.5f" % (evals[1] / eval_iters))
+            print_and_log("Verb accuracy = %.5f" % (evals[1] / eval_iters))
             
-            print_and_log("Theme accuracy = %.5f" % (evals[2] / eval_iters))
+            print_and_log("Object accuracy = %.5f" % (evals[2] / eval_iters))
             
-            print_and_log("Event accuracy = %.5f" % (evals[3] / eval_iters))
+            print_and_log("Preposition accuracy = %.5f" % (evals[3] / eval_iters))
             
-            print_and_log("Preposition accuracy = %.5f" % (evals[4] / eval_iters))
+            print_and_log("Preposition dependent accuracy = %.5f" % (evals[4] / eval_iters))
         
     if has_output:    
         return np.exp(costs / cost_iters)
@@ -179,6 +179,10 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--dict_dir',  action='store',
                                 help = "Where to save vocab dicts or to load them. By default, vocab dict files are put in /logs/run_TIMESTAMP" )
     
+    parser.add_argument('-r', '--tree',  action='store_true',
+                                help = "Whether to use the tree-Crf version. By default, just plain LSTM." )
+
+
     args = parser.parse_args()
     
     mode = args.mode
@@ -186,6 +190,13 @@ if __name__ == '__main__':
     log_dir = args.model_dir
 
     dict_dir = args.dict_dir
+
+    use_tree = args.tree
+
+    if use_tree:
+        print 'USE TREE CRF'
+    else:
+        print "DON'T USE TREE CRF"
     
     if mode == TRAIN:
         current_time = datetime.datetime.now()
@@ -194,9 +205,13 @@ if __name__ == '__main__':
     
         if not log_dir:
             log_dir = os.path.join('logs', 'run_' + time_str)
-            
-        print('Train and output into directory ' + log_dir)
-        os.makedirs(log_dir)
+        
+        if not os.path.isdir(log_dir):
+            print('Train and output into directory ' + log_dir)
+            os.makedirs(log_dir)
+        else:
+            print('Continue training model in directory ' + log_dir)
+        
         logging.basicConfig(filename = os.path.join(log_dir, 'logs.log'),level=logging.DEBUG)
         
         # Copy the current executed py file to log (To make sure we can replicate the experiment with the same code)
@@ -235,7 +250,10 @@ if __name__ == '__main__':
         if log_dir:
             model_path = os.path.join(log_dir, "model.ckpt")
             
-            print('Test using model ' + model_path)
+            if os.path.isfile(model_path):
+                print('Test using model ' + model_path)
+            else:
+                raise Exception('Non existant model')
             
             if dict_dir == None:
                 dict_dir = os.path.join(log_dir, 'dict')
@@ -260,14 +278,14 @@ if __name__ == '__main__':
     val_dir = FEATURE_VAL_DIR
     blindtest_dir = FEATURE_BLINDTEST_DIR
     
-    
-    
-    
     print 'Turn training feature vectors into batch form for LSTM training'
     
-    config = TreeConfig(vocab_dict)
-    eval_config = TreeConfig(vocab_dict)
-    intermediate_config = TreeConfig(vocab_dict)
+    if use_tree:
+        config = TreeConfig(vocab_dict)
+        eval_config = TreeConfig(vocab_dict)
+        intermediate_config = TreeConfig(vocab_dict)
+    else:
+        config, eval_config, intermediate_config = [NoTreeConfig() for _ in xrange(3)]
     
     '''
     No dropout
@@ -315,7 +333,10 @@ if __name__ == '__main__':
         '''
         print('-------- Setup m model ---------')
         with tf.variable_scope("model", reuse=None, initializer=initializer):
-            config.tree.initiate_crf()
+            try:
+                config.tree.initiate_crf()
+            except:
+                pass
             m = LSTM_TREE_CRF(is_training=True, has_output = True, config=config)
         
         '''
@@ -323,7 +344,10 @@ if __name__ == '__main__':
         '''
         print('-------- Setup m_intermediate_test model ---------')
         with tf.variable_scope("model", reuse=True, initializer=initializer):
-            intermediate_config.tree.initiate_crf()
+            try:
+                intermediate_config.tree.initiate_crf()
+            except:
+                pass
             m_intermediate_test = LSTM_TREE_CRF(is_training=False, has_output = True, config=intermediate_config)
         
         '''
@@ -331,7 +355,10 @@ if __name__ == '__main__':
         '''
         print('-------- Setup mtest model ----------')
         with tf.variable_scope("model", reuse=True, initializer=initializer):
-            eval_config.tree.initiate_crf()
+            try:
+                eval_config.tree.initiate_crf()
+            except:
+                pass
             mtest = LSTM_TREE_CRF(is_training=False, has_output = True, config=eval_config)
         
         if mode == BLIND_TEST:
@@ -358,9 +385,15 @@ if __name__ == '__main__':
             return feature_generator
 
         if mode == TRAIN:
-            tf.global_variables_initializer().run()
+            
 
             print_and_log('----------------TRAIN---------------')
+
+            if os.path.isfile(model_path):
+                m.saver.restore(session, model_path)
+                print_and_log("Restore model saved in file: %s" % model_path)
+            else:
+                tf.global_variables_initializer().run()
              
             for i in range(config.max_max_epoch):
                 

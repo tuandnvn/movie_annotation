@@ -88,7 +88,7 @@ def read_feature_vectors( directory ):
         except:
             print 'Load file ', clip_file, ' has problem!!!'
 
-        if counter > 20000:
+        if counter > 5000:
             return
 
 def extract( line ):

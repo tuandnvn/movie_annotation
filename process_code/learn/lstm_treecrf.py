@@ -25,21 +25,27 @@ class LSTM_TREE_CRF(object):
         Parameters:
         ----------
         is_training: Whether we're training over the data or not (whether we should update the model parameters)
-        has_output:  Whether there are target to calculate loss or we just output predict ion
+        has_output:  Whether there are target to calculate loss or we just output predicted labels
         config shoule have:
             config.tree = Tree
             
         '''
-
-        self.tree = config.tree
+        try:
+            self.tree = config.tree
+        except:
+            self.tree = None
         self.batch_size = batch_size = config.batch_size
         # Maximum number of steps in each data sequence
         self.num_steps = num_steps = config.num_steps
         self.n_input = n_input = config.n_input
         self.max_grad_norm = config.max_grad_norm
         self.size = size = config.hidden_size
+
         self.crf_weight = crf_weight = config.crf_weight
         self.node_types = config.tree.node_types
+        self.hidden_layer = hidden_layer = config.hidden_layer
+
+        print 'Use hidden_layer = ', hidden_layer
 
         # self.dictionaries is dict of dict
         self.dictionaries = config.tree.dictionaries
@@ -58,8 +64,13 @@ class LSTM_TREE_CRF(object):
         self._debug = []
         
         # self.n_labels cells for self.n_labels outputs
+        #if hidden_layer:
+        #    cell_size = size
+        #else:
+        #    cell_size = n_input
         lstm_cells = [BasicLSTMCell(size, forget_bias = 0.0, state_is_tuple=True)\
                       for _ in xrange(self.n_labels)]
+
 
         # DropoutWrapper is a decorator that adds Dropout functionality
         if is_training and config.keep_prob < 1:
@@ -73,20 +84,24 @@ class LSTM_TREE_CRF(object):
         # Size = self.n_labels x ( batch_size x cell.state_size )
         self._initial_state = [cell.zero_state(batch_size, tf.float32) for cell in cells]
         
-        # Transformation of input to a list of num_steps data points
-        # For tf.nn.rnn
-        # inputs = tf.transpose(self._input_data, [1, 0, 2]) #(num_steps, batch_size, n_input)
-        inputs = tf.reshape(self._input_data, [-1, n_input]) # (batch_size * num_steps, n_input)
-        
-        with tf.variable_scope("hidden"):
-            weight = tf.get_variable("weight", [n_input, size])
-            bias = tf.get_variable("bias", [size])
-            
-            # (batch_size * num_steps, size)
-            inputs = tf.matmul(inputs, weight) + bias
         
         
-        inputs = tf.reshape(inputs, (-1, num_steps, size)) # (batch_size, num_steps, size)
+        if hidden_layer:
+            # Transformation of input to a list of num_steps data points
+            # For tf.nn.rnn
+            # inputs = tf.transpose(self._input_data, [1, 0, 2]) #(num_steps, batch_size, n_input)
+            inputs = tf.reshape(self._input_data, [-1, n_input]) # (batch_size * num_steps, n_input)
+
+            with tf.variable_scope("hidden"):
+                weight = tf.get_variable("weight", [n_input, size])
+                bias = tf.get_variable("bias", [size])
+                
+                # (batch_size * num_steps, size)
+                inputs = tf.matmul(inputs, weight) + bias
+            inputs = tf.reshape(inputs, (-1, num_steps, size)) # (batch_size, num_steps, size)
+        else:
+            inputs = self._input_data
+
         # For tf.nn.rnn
         # inputs = tf.split(0, num_steps, inputs) # num_steps * ( batch_size, size )
         
@@ -131,7 +146,10 @@ class LSTM_TREE_CRF(object):
         for slot in self.node_types:
             n_classes = len(self.dictionaries[slot])
             with tf.variable_scope("output_" + slot):
+                #if hidden_layer:
                 weight = tf.get_variable("weight", [size, n_classes])
+                #else:
+                #    weight = tf.get_variable("weight", [n_input, n_classes])
                 bias = tf.get_variable("bias", [n_classes])
 
                 # ( batch_size, n_classes )
@@ -139,11 +157,29 @@ class LSTM_TREE_CRF(object):
             
             # logits
             logits[slot] = logit
-        
-        log_sum = self.tree.sum_over(crf_weight, logits)
+
+        if self.tree != None:
+            log_sum = self.tree.sum_over(crf_weight, logits)
+        else:
+            log_sum = tf.zeros(batch_size)
+
+            for slot in self.node_types:
+                # ( n_classes, batch_size )
+                logit = tf.transpose(logits[slot])
+                        
+                # ( batch_size )
+                l = tf.reduce_min(logit, 0)
+                l += tf.log(tf.reduce_sum(tf.exp(logit - l), 0))
+
+                log_sum += l
         
         if has_output:
-            logit_correct = self.tree.calculate_logit_correct(crf_weight, batch_size, logits, self._targets)
+            if self.tree != None:
+                logit_correct = self.tree.calculate_logit_correct(crf_weight, batch_size, logits, self._targets)
+            else:
+                logit_correct = tf.zeros(batch_size)
+                for id, slot in enumerate(self.node_types):
+                    logit_correct += gather_2d(logits[slot], tf.transpose(tf.stack([tf.range(batch_size), id])))
         
             self._cost =  tf.reduce_mean(log_sum - logit_correct)
             

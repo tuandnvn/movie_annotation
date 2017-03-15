@@ -47,6 +47,9 @@ def gothrough(feature_generator, labels, batch_size, max_steps):
                         num_labels = len(lbl)
                     features.append(feature_array)
                     generated_lbls.append(lbl)
+
+                    if no_of_frames > max_steps:
+                        no_of_frames = max_steps
                     lengths.append(no_of_frames)
                 
                     if len(features) == batch_size:
@@ -56,7 +59,7 @@ def gothrough(feature_generator, labels, batch_size, max_steps):
 
                         # Set features
                         for i, feature in  enumerate(features):
-                             x[i, :lengths[i], :] = features[i]
+                             x[i, :lengths[i], :] = features[i][:lengths[i], :]
                              y[i, :] =  generated_lbls[i]
                         
                         # Reset the accumulators
