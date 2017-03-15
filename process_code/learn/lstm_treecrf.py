@@ -10,6 +10,8 @@ import copy
 import numpy as np
 import tensorflow as tf
 
+from crf_utils import gather_2d, gather_2d_to_shape, expand, expand_first
+
 try:
     from tensorflow.nn.rnn_cell import BasicLSTMCell, DropoutWrapper, MultiRNNCell
 except:
@@ -34,6 +36,7 @@ class LSTM_TREE_CRF(object):
             self.tree = config.tree
         except:
             self.tree = None
+
         self.batch_size = batch_size = config.batch_size
         # Maximum number of steps in each data sequence
         self.num_steps = num_steps = config.num_steps
@@ -46,12 +49,21 @@ class LSTM_TREE_CRF(object):
         
         self.hidden_layer = hidden_layer = config.hidden_layer
 
+        self.null_weights = config.null_weights
+
         print 'Use hidden_layer = ', hidden_layer
 
         # self.dictionaries is dict of dict
         self.dictionaries = config.dictionaries
 
         self.n_labels = len(self.node_types)
+
+        self.null_discounts = dict([(slot, 
+                                    tf.one_hot(self.dictionaries[slot].token2id['null'], 
+                                                len(self.dictionaries[slot]), 
+                                                on_value=self.null_weights, 
+                                                off_value=0.0, dtype = tf.float32 )) 
+                                for slot in self.node_types])
         
         # Input data and labels should be set as placeholders
         self._input_data = tf.placeholder(tf.float32, [batch_size, num_steps, n_input])
@@ -84,7 +96,6 @@ class LSTM_TREE_CRF(object):
         # cell.state_size = config.num_layers * 2 * size
         # Size = self.n_labels x ( batch_size x cell.state_size )
         self._initial_state = [cell.zero_state(batch_size, tf.float32) for cell in cells]
-        
         
         
         if hidden_layer:
@@ -162,25 +173,13 @@ class LSTM_TREE_CRF(object):
         if self.tree != None:
             log_sum = self.tree.sum_over(crf_weight, logits)
         else:
-            log_sum = tf.zeros(batch_size)
-
-            for slot in self.node_types:
-                # ( n_classes, batch_size )
-                logit = tf.transpose(logits[slot])
-                        
-                # ( batch_size )
-                l = tf.reduce_min(logit, 0)
-                l += tf.log(tf.reduce_sum(tf.exp(logit - l), 0))
-
-                log_sum += l
+            log_sum = self.sum_over()
         
         if has_output:
             if self.tree != None:
                 logit_correct = self.tree.calculate_logit_correct(crf_weight, batch_size, logits, self._targets)
             else:
-                logit_correct = tf.zeros(batch_size)
-                for id, slot in enumerate(self.node_types):
-                    logit_correct += gather_2d(logits[slot], tf.transpose(tf.stack([tf.range(batch_size), id])))
+                logit_correct = self.calculate_logit_correct()
         
             self._cost =  tf.reduce_mean(log_sum - logit_correct)
             
@@ -193,7 +192,71 @@ class LSTM_TREE_CRF(object):
                 self.make_prediction_op()
     
         self._saver =  tf.train.Saver()
+    
+    def sum_over( self ):
+        '''
+        Sum over the exponential term
+
+        Return:
+        -------
+        log_sum:            numpy array of size = (batch_size)
+        '''
+
+        log_sum = tf.zeros(self.batch_size)
+
+        for slot in self.node_types:
+            # ( batch_size , n_classes)
+            discounted_logit = self.logits[slot] + self.null_discounts[slot]
+
+            # ( n_classes, batch_size )
+            logit = tf.transpose(discounted_logit)
+                    
+            # ( batch_size )
+            l = tf.reduce_min(logit, 0)
+            l += tf.log(tf.reduce_sum(tf.exp(logit - l), 0))
+
+            log_sum += l
+
+        return log_sum
+
+    def calculate_logit_correct( self ):
+        '''
+        Calculate the correct logit
+
+        Return:
+        -------
+        logit_correct:       numpy array of size = (batch_size)
+        '''
+
+        logit_correct = tf.zeros(self.batch_size)
+        for id, slot in enumerate(self.node_types):
+            logit_correct += gather_2d(self.logits[slot], tf.transpose(tf.stack([tf.range(self.batch_size), self._targets[:,id] ])))
+            logit_correct += tf.gather ( self.null_discounts[slot], self._targets[:,id] )
+
+        return logit_correct
+
+    def predict( self ) :
+        '''
+        Predict the best combination (they are all independent here)
         
+        Return:
+        -------
+        out:            numpy array of size = (batch_size, len(self.node_types) )
+        '''
+
+        max_logits = []
+        for slot in self.node_types:
+            # ( batch_size, n_classes )
+            discounted_logit = self.logits[slot] + self.null_discounts[slot]
+
+            max_logit = tf.argmax(discounted_logit, 1)
+
+            max_logits.append(max_logit)
+
+        # batch_size, len(self.node_types)
+        max_logits = tf.cast(tf.transpose(tf.stack(max_logits)), np.int32)
+
+        return max_logits
         
     def make_train_op(self):
         self._lr = tf.Variable(0.0, trainable=False)
@@ -207,7 +270,10 @@ class LSTM_TREE_CRF(object):
         
     def make_test_op(self):
         # (batch_size, self.n_labels)
-        out = self.tree.predict( self.crf_weight, self.batch_size, self.logits )
+        if self.tree != None:
+            out = self.tree.predict( self.crf_weight, self.batch_size, self.logits )
+        else:
+            out = self.predict()
         
         # (self.n_labels, batch_size)
         correct_preds = [tf.equal(out[:,i], self._targets[:,i]) \
@@ -220,9 +286,13 @@ class LSTM_TREE_CRF(object):
         
     def make_prediction_op(self):
         # (batch_size, self.n_labels)
-        out = self.tree.predict( self.crf_weight, self.batch_size, self.logits )
+        if self.tree != None:
+            out = self.tree.predict( self.crf_weight, self.batch_size, self.logits )
+        else:
+            out = self.predict()
         
         self._test_op = out
+    
     
     def assign_lr(self, session, lr_value):
         session.run(tf.assign(self.lr, lr_value))

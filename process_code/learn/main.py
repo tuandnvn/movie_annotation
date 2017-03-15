@@ -31,7 +31,7 @@ from config import TreeConfig, NoTreeConfig
 from generate_utils import gothrough
 from lstm_treecrf import LSTM_TREE_CRF
 from read_utils import read_feature_vectors, create_vocabulary, \
-    read_output_labels
+    read_output_labels, ids_to_values
 
 from utils import FEATURE_TRAIN_DIR, FEATURE_TEST_DIR, FEATURE_VAL_DIR, \
     FEATURE_BLINDTEST_DIR, TUPLE_TRAIN_FILE, ORIGINAL_ANNOTATE_TRAIN_FILE, \
@@ -43,7 +43,9 @@ def print_and_log(log_str):
     print (log_str)
     logging.info(log_str)
     
-    
+
+
+
 def run_epoch(session, m, data_generator, label_ids, eval_op, verbose=False, is_training=True, has_output = True, 
               summary_op = None, summary_writer = None, predict_writer = None):
     
@@ -73,8 +75,8 @@ def run_epoch(session, m, data_generator, label_ids, eval_op, verbose=False, is_
     total_correct_pred = 0
     
     if verbose:
-        print_and_log('------PRINT OUT PREDICTED AND CORRECT LABELS--------')
-    
+        print 'Print out some predicted labels'
+
     for step, (x, y, z) in enumerate( gothrough( data_generator, label_ids, m.batch_size, m.num_steps) ):
         feed_dict = {}
         feed_dict[m.input_data] = x
@@ -115,11 +117,12 @@ def run_epoch(session, m, data_generator, label_ids, eval_op, verbose=False, is_
             costs += cost
             cost_iters += 1
         
-            if verbose and step % 30 == 0:
+            if step % 30 == 0:
                 print_and_log("cost %.3f, costs %.3f, iters %d, Step %d, perplexity: %.3f" % 
                   (cost, costs, cost_iters, step, np.exp(costs / cost_iters)))
-                
-                
+        
+            
+
         if not is_training:
             if has_output:
                 y_pred, eval_val = eval_val
@@ -135,9 +138,10 @@ def run_epoch(session, m, data_generator, label_ids, eval_op, verbose=False, is_
             else:
                 y_pred = eval_val
 
-            #if verbose and step % 30 == 0:
-            #    print y_pred
-            #    print y
+            if verbose and step % 30 == 0:
+                for i in xrange(10):
+                    print ids_to_values( y_pred[i, :], m.dictionaries )
+                    print ids_to_values( y[i, :], m.dictionaries )
             
             # Write content of y_pred to the predict_writer
             if predict_writer != None:
@@ -287,7 +291,7 @@ if __name__ == '__main__':
         eval_config = TreeConfig(vocab_dict)
         intermediate_config = TreeConfig(vocab_dict)
     else:
-        config, eval_config, intermediate_config = [NoTreeConfig() for _ in xrange(3)]
+        config, eval_config, intermediate_config = [NoTreeConfig(vocab_dict) for _ in xrange(3)]
     
     '''
     No dropout

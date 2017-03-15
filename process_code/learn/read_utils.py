@@ -55,6 +55,42 @@ class Dictionary(object):
     def __len__(self):
         return len(self.token2id)
 
+    @property
+    def id2token(self):
+        if '_id2token' not in self.__dict__:
+            self._id2token = dict([ (value, key) for key, value in self.token2id.iteritems() ])
+        return self._id2token
+    
+def ids_to_values ( ids, ds ):
+    '''
+    Parameters:
+    ----------
+    ids:    list of ids
+    ds:     My Dictionaries that store words in the tuples (use create_vocabulary to create them)
+    
+    Return:
+    -------
+    values: list of string
+    '''
+    values = [ds[t].id2token[ids[i]] if ids[i] in ds[t].id2token else 'ERROR' for i, t in enumerate(ALL_SLOTS)]
+
+    return values
+
+def values_to_ids ( values , ds):
+    '''
+    Parameters:
+    ----------
+    values: Dictionary from slot to string
+    ds:     My Dictionaries that store words in the tuples (use create_vocabulary to create them)
+    
+    Return:
+    -------
+    ids:    list of ids
+    '''
+    ids = [ds[t].token2id[values[t]] if values[t] in ds[t].token2id else ds[t].token2id['null'] for t in ALL_SLOTS]
+
+    return ids
+
 
 def read_feature_vectors( directory ):
     '''
@@ -195,7 +231,7 @@ def read_output_labels ( original_file, tuple_file, ds ):
             
             # Turn token in values to ids
             # If token is not found, turn its to null's id
-            ids = [ds[t].token2id[values[t]] if values[t] in ds[t].token2id else ds[t].token2id['null'] for t in ALL_SLOTS]
+            ids = values_to_ids( values, ds )
             
             #print ids
             if sentence in clip_name_map:
