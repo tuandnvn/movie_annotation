@@ -92,7 +92,7 @@ def values_to_ids ( values , ds):
     return ids
 
 
-def read_feature_vectors( directory ):
+def read_feature_vectors( directory, limit = -1 ):
     '''
     Generate clip_file name and feature vector 
     
@@ -115,7 +115,7 @@ def read_feature_vectors( directory ):
     # Clip feature should be generated according to the alphanumerical order
     counter = 0
 
-    for clip_file, feature_file_name in feature_clip_and_files:
+    for clip_file, feature_file_name in sorted(feature_clip_and_files)[:limit]:
         try:
             array = np.load(feature_file_name)
             
@@ -124,8 +124,27 @@ def read_feature_vectors( directory ):
         except:
             print 'Load file ', clip_file, ' has problem!!!'
 
-        if counter > 5000:
-            return
+def count_vocab ( directory, limit , labels ):
+    feature_clip_and_files = []
+    extension = '.rfv.npy'
+    feature_files = glob.glob(os.path.join(directory, '*' + extension))
+
+    for feature_file in feature_files:
+        ff = feature_file.split("/")[-1]
+        feature_clip_and_files.append( (ff[:- len(extension)], feature_file) )
+
+    collects = dict( [(t, []) for t in ALL_SLOTS] )
+
+    for clip_file, feature_file_name in sorted(feature_clip_and_files)[:limit]:
+        for lbls in labels[clip_file]:
+            for i, t in enumerate(ALL_SLOTS):
+                collects[t].append(lbls[i])
+    
+    tokenid2count = dict( [(t, Counter()) for t in ALL_SLOTS] )
+    for t in ALL_SLOTS:
+        tokenid2count[t].update(collects[t])
+
+    return tokenid2count
 
 def extract( line ):
     p = re.compile('(?P<sentence>\d+)(\s*)?(?P<subject>\w+[\s\w]?)(,\s*)?(?P<verb>[\s\w]+)(,\s*)?(?P<object>[\s\w]+)(,\s*)?(?P<prep>[\s\w]+)?(,\s*)?(?P<prepDep>[\s\w]+)?')

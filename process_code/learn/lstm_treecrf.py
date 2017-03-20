@@ -49,7 +49,7 @@ class LSTM_TREE_CRF(object):
         
         self.hidden_layer = hidden_layer = config.hidden_layer
 
-        self.null_weights = config.null_weights
+        # self.null_weights = config.null_weights
 
         print 'Use hidden_layer = ', hidden_layer
 
@@ -58,12 +58,16 @@ class LSTM_TREE_CRF(object):
 
         self.n_labels = len(self.node_types)
 
-        self.null_discounts = dict([(slot, 
-                                    tf.one_hot(self.dictionaries[slot].token2id['null'], 
-                                                len(self.dictionaries[slot]), 
-                                                on_value=self.null_weights, 
-                                                off_value=0.0, dtype = tf.float32 )) 
-                                for slot in self.node_types])
+        self.train_algo = config.train_algo
+
+        #self.null_discounts = dict([(slot, 
+        #                            tf.one_hot(self.dictionaries[slot].token2id['null'], 
+        #                                        len(self.dictionaries[slot]), 
+        #                                        on_value=self.null_weights, 
+        #                                        off_value=1.0, dtype = tf.float32 )) 
+        #                        for slot in self.node_types])
+
+        
         
         # Input data and labels should be set as placeholders
         self._input_data = tf.placeholder(tf.float32, [batch_size, num_steps, n_input])
@@ -170,6 +174,10 @@ class LSTM_TREE_CRF(object):
             # logits
             logits[slot] = logit
 
+        if config.balance:
+            for slot in self.node_types:
+                logits[slot] *= config.loss_weights[slot]
+
         if self.tree != None:
             log_sum = self.tree.sum_over(crf_weight, logits)
         else:
@@ -206,7 +214,7 @@ class LSTM_TREE_CRF(object):
 
         for slot in self.node_types:
             # ( batch_size , n_classes)
-            discounted_logit = self.logits[slot] + self.null_discounts[slot]
+            discounted_logit = self.logits[slot]
 
             # ( n_classes, batch_size )
             logit = tf.transpose(discounted_logit)
@@ -230,8 +238,8 @@ class LSTM_TREE_CRF(object):
 
         logit_correct = tf.zeros(self.batch_size)
         for id, slot in enumerate(self.node_types):
-            logit_correct += gather_2d(self.logits[slot], tf.transpose(tf.stack([tf.range(self.batch_size), self._targets[:,id] ])))
-            logit_correct += tf.gather ( self.null_discounts[slot], self._targets[:,id] )
+            logit_correct += gather_2d(self.logits[slot]
+                , tf.transpose(tf.stack([tf.range(self.batch_size), self._targets[:,id] ])))
 
         return logit_correct
 
@@ -247,7 +255,7 @@ class LSTM_TREE_CRF(object):
         max_logits = []
         for slot in self.node_types:
             # ( batch_size, n_classes )
-            discounted_logit = self.logits[slot] + self.null_discounts[slot]
+            discounted_logit = self.logits[slot]
 
             max_logit = tf.argmax(discounted_logit, 1)
 

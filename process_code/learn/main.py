@@ -25,13 +25,14 @@ import numpy as np
 import tensorflow as tf
 import argparse
 import pickle
+import glob
 
 
 from config import TreeConfig, NoTreeConfig
 from generate_utils import gothrough
 from lstm_treecrf import LSTM_TREE_CRF
 from read_utils import read_feature_vectors, create_vocabulary, \
-    read_output_labels, ids_to_values
+    read_output_labels, ids_to_values, count_vocab
 
 from utils import FEATURE_TRAIN_DIR, FEATURE_TEST_DIR, FEATURE_VAL_DIR, \
     FEATURE_BLINDTEST_DIR, TUPLE_TRAIN_FILE, ORIGINAL_ANNOTATE_TRAIN_FILE, \
@@ -117,7 +118,7 @@ def run_epoch(session, m, data_generator, label_ids, eval_op, verbose=False, is_
             costs += cost
             cost_iters += 1
         
-            if step % 30 == 0:
+            if step % 10 == 0:
                 print_and_log("cost %.3f, costs %.3f, iters %d, Step %d, perplexity: %.3f" % 
                   (cost, costs, cost_iters, step, np.exp(costs / cost_iters)))
         
@@ -138,11 +139,19 @@ def run_epoch(session, m, data_generator, label_ids, eval_op, verbose=False, is_
             else:
                 y_pred = eval_val
 
-            if verbose and step % 30 == 0:
-                for i in xrange(10):
-                    print ids_to_values( y_pred[i, :], m.dictionaries )
-                    print ids_to_values( y[i, :], m.dictionaries )
-            
+            # if verbose and step % 30 == 0:
+            #     for i in xrange(10):
+            #     	if np.equal(y_pred[:, i], y[:,i]):
+	           #          print ids_to_values( y_pred[i, :], m.dictionaries )
+	           #          print ids_to_values( y[i, :], m.dictionaries )
+	        
+	        # Print out any case that is not trivial
+            for i in xrange(y.shape[0]):
+                if np.all(y_pred[i, :] == y[i, :]):
+                	value = ids_to_values( y[i, :], m.dictionaries )
+                	if np.any( value != ['someone', 'null', 'null', 'null', 'null'] ) :
+                		print_and_log( ids_to_values( y[i, :], m.dictionaries ) )
+
             # Write content of y_pred to the predict_writer
             if predict_writer != None:
                 for i in xrange(y_pred.shape[0]):
@@ -188,16 +197,19 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--tree',  action='store_true',
                                 help = "Whether to use the tree-Crf version. By default, just plain LSTM." )
 
+    parser.add_argument('-l', '--limit',  action='store',
+                                help = "Limit the number of samples." )
+
+    parser.add_argument('-a', '--algorithm',  action='store',
+                                help = "Limit the number of samples." )
 
     args = parser.parse_args()
     
     mode = args.mode
-    
     log_dir = args.model_dir
-
     dict_dir = args.dict_dir
-
     use_tree = args.tree
+    limit = int(args.limit)
 
     if use_tree:
         print 'USE TREE CRF'
@@ -212,16 +224,23 @@ if __name__ == '__main__':
         if not log_dir:
             log_dir = os.path.join('logs', 'run_' + time_str)
         
+
         if not os.path.isdir(log_dir):
             print('Train and output into directory ' + log_dir)
             os.makedirs(log_dir)
+
+            copy_code_dir = os.path.join( log_dir, 'code') 
+            os.makedirs(copy_code_dir)
         else:
             print('Continue training model in directory ' + log_dir)
         
         logging.basicConfig(filename = os.path.join(log_dir, 'logs.log'),level=logging.DEBUG)
         
-        # Copy the current executed py file to log (To make sure we can replicate the experiment with the same code)
-        shutil.copy(os.path.realpath(__file__), log_dir)
+        code_dir = os.path.dirname(os.path.realpath(__file__))
+
+        for f in glob.glob(os.path.join(code_dir, '*.py')):
+	        # Copy the current executed py file to log (To make sure we can replicate the experiment with the same code)
+	        shutil.copy(f, copy_code_dir)
         
         '''
         Create model path
@@ -264,18 +283,18 @@ if __name__ == '__main__':
             if dict_dir == None:
                 dict_dir = os.path.join(log_dir, 'dict')
             
-            vocab_dict = {}
-            for slot in ALL_SLOTS:
-                dict_file = os.path.join( dict_dir, slot + '.dict')
-                
-                try:
-                    with open(dict_file, 'rb') as fh:
-                        vocab_dict[slot] = pickle.load(fh)
+    vocab_dict = {}
+    for slot in ALL_SLOTS:
+        dict_file = os.path.join( dict_dir, slot + '.dict')
+        
+        try:
+            with open(dict_file, 'rb') as fh:
+                vocab_dict[slot] = pickle.load(fh)
 
-                    print 'Load vocab_dict of ', slot, ' from ',  dict_file
-                except:
-                    print 'Load vocab_dict of ', slot, ' has exception!'
-        else:
+            print 'Load vocab_dict of ', slot, ' from ',  dict_file
+        except:
+            print 'Load vocab_dict of ', slot, ' has exception!'
+            
             sys.exit("learning.py -t TEST -m model_path")
             
             
@@ -286,13 +305,29 @@ if __name__ == '__main__':
     
     print 'Turn training feature vectors into batch form for LSTM training'
     
+    count_vocab_for_train = {}
+
+    if mode == TRAIN:
+        train_label_ids = read_output_labels(ORIGINAL_ANNOTATE_TRAIN_FILE, TUPLE_TRAIN_FILE, vocab_dict)
+        val_label_ids = read_output_labels(ORIGINAL_ANNOTATE_VAL_FILE, TUPLE_VAL_FILE, vocab_dict)
+
+        print 'count_vocab_for_train'
+        count_vocab_for_train = count_vocab ( train_dir, limit, train_label_ids)
+        print count_vocab_for_train
+
+    if mode == VALIDATE:
+        val_label_ids = read_output_labels(ORIGINAL_ANNOTATE_VAL_FILE, TUPLE_VAL_FILE, vocab_dict)
+        
+    if mode == TEST:
+        test_label_ids = read_output_labels(ORIGINAL_ANNOTATE_TEST_FILE, TUPLE_TEST_FILE, vocab_dict)
+
     if use_tree:
-        config = TreeConfig(vocab_dict)
-        eval_config = TreeConfig(vocab_dict)
-        intermediate_config = TreeConfig(vocab_dict)
+        config = TreeConfig(vocab_dict, count_vocab_for_train)
+        eval_config = TreeConfig(vocab_dict, count_vocab_for_train)
+        intermediate_config = TreeConfig(vocab_dict, count_vocab_for_train)
     else:
-        config, eval_config, intermediate_config = [NoTreeConfig(vocab_dict) for _ in xrange(3)]
-    
+        config, eval_config, intermediate_config = [NoTreeConfig(vocab_dict, count_vocab_for_train) for _ in xrange(3)]
+
     '''
     No dropout
     '''
@@ -305,7 +340,7 @@ if __name__ == '__main__':
     eval_config.keep_prob = 1
     eval_config.batch_size = 20
     eval_config.crf_weight = 0.5
-    
+
     logging.info("Train Configuration")
     for attr in dir(config):
         # Not default properties
@@ -320,16 +355,6 @@ if __name__ == '__main__':
             log_str = "%s = %s" % (attr, getattr(eval_config, attr))
             logging.info(log_str)
 
-    if mode == TRAIN:
-        train_label_ids = read_output_labels(ORIGINAL_ANNOTATE_TRAIN_FILE, TUPLE_TRAIN_FILE, vocab_dict)
-        val_label_ids = read_output_labels(ORIGINAL_ANNOTATE_VAL_FILE, TUPLE_VAL_FILE, vocab_dict)
-
-    if mode == VALIDATE:
-        val_label_ids = read_output_labels(ORIGINAL_ANNOTATE_VAL_FILE, TUPLE_VAL_FILE, vocab_dict)
-        
-    if mode == TEST:
-        test_label_ids = read_output_labels(ORIGINAL_ANNOTATE_TEST_FILE, TUPLE_TEST_FILE, vocab_dict)
-            
     with tf.Graph().as_default(), tf.Session() as session:
         initializer = tf.random_uniform_initializer(-config.init_scale,
                                                     config.init_scale)
@@ -378,16 +403,16 @@ if __name__ == '__main__':
         # Create data generator
         def create_data_generator( mode ):
             if mode == TRAIN:
-                feature_generator = read_feature_vectors ( train_dir )
+                feature_generator = read_feature_vectors ( train_dir , limit)
 
             if mode == VALIDATE:
-                feature_generator = read_feature_vectors ( val_dir )
+                feature_generator = read_feature_vectors ( val_dir , limit)
                 
             if mode == TEST:
-                feature_generator = read_feature_vectors ( test_dir )
+                feature_generator = read_feature_vectors ( test_dir , limit)
                 
             if mode == BLIND_TEST:
-                feature_generator = read_feature_vectors ( blindtest_dir )
+                feature_generator = read_feature_vectors ( blindtest_dir , limit)
             return feature_generator
 
         if mode == TRAIN:
@@ -408,7 +433,7 @@ if __name__ == '__main__':
                 lr_decay = config.lr_decay ** max(i - config.max_epoch, 0.0)
                 m.assign_lr(session, config.learning_rate * lr_decay)
 
-                print_and_log("Epoch: %d Learning rate: %.3f" % (i + 1, session.run(m.lr)))
+                print_and_log("Epoch: %d Learning rate: %.5f" % (i + 1, session.run(m.lr)))
 
                 train_feature_generator = create_data_generator(TRAIN)
 
