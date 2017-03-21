@@ -10,24 +10,24 @@ import tensorflow as tf
 
 class NoTreeConfig(object):
     init_scale = 0.1
-    learning_rate = 0.5     # Set this value higher without norm clipping
+    learning_rate = 1     # Set this value higher without norm clipping
                             # might make the cost explodes
     max_grad_norm = 1       # The maximum permissible norm of the gradient
-    num_layers = 1          # Number of LSTM layers
+    num_layers = 5          # Number of LSTM layers
     num_steps = 20          # Divide the data into num_steps segment 
-    hidden_size = 4000       # the number of LSTM units
+    hidden_size = 512       # the number of LSTM units
     max_epoch = 20          # The number of epochs trained with the initial learning rate
     max_max_epoch = 1000     # Number of running epochs
     keep_prob = 1.0         # Drop out keep probability, = 1.0 no dropout
     lr_decay = 0.988         # Learning rate decay
-    batch_size = 1000         # We could actually still use batch_size for convenient
+    batch_size = 500         # We could actually still use batch_size for convenient
     hop_step = 5            # Hopping between two samples
     test_epoch = 20         # Test after these many epochs
     save_epoch = 100
     n_input = 500
     hidden_layer = True
     crf_weight = 1
-    balance = False
+    balance = True
     train_algo = tf.train.AdagradOptimizer
     # train_algo = tf.train.GradientDescentOptimizer
 
@@ -54,8 +54,7 @@ class NoTreeConfig(object):
           self.loss_weights[node_type] = np.zeros( len(gensim_dictionaries[node_type]), dtype=np.float32 )
 
           for id in dic:
-            # Because we filter extreme at 20
-            self.loss_weights[node_type][id] = 1.0 / dic[id] 
+            self.loss_weights[node_type][id] = 1.0 / ( 1 + np.log(dic[id] ))
 
         
 class TreeConfig(NoTreeConfig):
