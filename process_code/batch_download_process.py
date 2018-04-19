@@ -56,18 +56,128 @@ def download( url_queue, downloaded_queue, processed_files, downloaded_files ):
 
 		downloaded_queue.put( path, block = True, timeout = None)
 
+# These values are average of RGB channels from ImageNet 
 mean_pix = [103.939, 116.779, 123.68]
-def get_features_from_path (device, cgg_model, sample_ratio, path):
-	def process_frame ( frame ):
-		# Subtract mean of color fields for each color
-		for i in xrange(3):
-			frame[:,:,i] -= mean_pix[i]
 
-		# ( height, width, channels ) -> ( channels, height, width )
-		frame = frame.transpose((2,0,1))
+def process_frame ( frame ):
+	"""
+	You should always use this code for any image frame read from picture or videos
+	"""
+	# Subtract mean of color fields for each color
+	for i in xrange(3):
+		frame[:,:,i] -= mean_pix[i]
 
-		return frame
+	# ( height, width, channels ) -> ( channels, height, width )
+	frame = frame.transpose((2,0,1))
 
+	return frame
+
+def get_cropped_images_from_frame ( frame, fix_size = 256, cropped_size = 224 ):
+	"""
+	Parameters:
+	=============
+	frame: a frame image with shape (height, width, channels) taken from video or from image
+	fix_size: rescale the original image to have the shortest edge of lenght fix_size. So image size (1024, 1536) -> (256, 384)
+	cropped_size: cropping 4 corners and the middle part
+
+	Return:
+	=============
+	images: cropping (and mirroring) 10 ways to produce 10 cropped images. Size [10, 3, cropped_size, cropped_size]
+
+	We need to crop the original image to a same format of size (cropped_size, cropped_size)
+	For example, if rescaled image of size (4,4), and we crop into size (2,2):
+
+	1 2 3 4   ->  1 2 ,   3 4 ,   2 4 ,   6 8 ,   6 7
+	5 6 7 8       5 6     7 8     1 3     5 7     4 6 
+	2 4 6 8
+	1 3 5 7
+
+	We also need to add mirroring images:
+
+	1 2   ->   2 1
+	5 6   ->   6 5
+
+	"""
+	# Change to float type
+	frame = frame.astype(np.float32)
+
+	height, width, channels = frame.shape
+
+	if height < width:
+		# dsize = ( # of columns, # of rows ) = ( width, height )
+		frame = cv2.resize(frame, dsize = (fix_size * width / height, fix_size), interpolation = cv2.INTER_AREA)
+	else:
+		frame = cv2.resize(frame, dsize = (fix_size, fix_size * height / width), interpolation = cv2.INTER_AREA)
+
+
+	# Subtract the mean
+	# and transfer to ( channels, height, width )
+	frame = process_frame(frame)
+
+
+	# Get size after reshape
+	_, height, width = frame.shape
+
+
+	# Prepare a numpy array to be passed to the CGG network
+	imgs = np.zeros( (10, 3, cropped_size, cropped_size) )
+
+	# oversample (4 corners, center, and their x-axis flips)
+
+	indices_height = [0, height - cropped_size]
+	indices_width = [0, width - cropped_size]
+	
+	center_height = (height - cropped_size) / 2
+	center_width = (width - cropped_size) / 2
+
+	curr = 0
+	for i in indices_height:
+		for j in indices_width:
+			imgs[curr, :, :, :] = frame[:, i: i + cropped_size, j: j + cropped_size]
+			curr += 1
+	imgs[4, :, :, :] = frame[:, center_height: center_height + cropped_size, center_width : center_width + cropped_size]
+
+	for i in xrange(5):
+		# Mirror image of the first five
+		imgs[i + 5, :, :, :] = imgs[i, ::-1 , :, :]
+
+	return imgs
+
+def get_features_from_image (device, cgg_model, path):
+	"""
+	Parameters:
+	=============
+	device: string. For example /gpu:0 or /cpu:0
+	cgg_model: model download from vgg-19 (https://drive.google.com/file/d/0Bz7KyqmuGsilZ2RVeVhKY0FyRmc/view?usp=sharing)
+	path: path of image
+
+	Return:
+	=============
+	features: [4096]
+	"""
+	frame = cv2.imread(path, cv2.IMREAD_COLOR)
+
+	imgs = get_cropped_images_from_frame ( frame )
+
+	# np.array[10, 4096 ]
+	with tf.device(device):
+		features = cgg_model.predict(imgs)
+
+	return np.mean(features, axis = 0)
+
+def get_features_from_video (device, cgg_model, sample_ratio, path):
+	"""
+	Parameters:
+	=============
+	device: string. For example /gpu:0 or /cpu:0
+	cgg_model: model download from vgg-19 (https://drive.google.com/file/d/0Bz7KyqmuGsilZ2RVeVhKY0FyRmc/view?usp=sharing)
+	sample_ratio: rate of sampling, for example 10 frames per sample.
+	path: path of video
+
+	Return:
+	=============
+	sequence_features: [# of sampled frames, 4096]
+	"""
 	t = time.time()
 
 	cap = cv2.VideoCapture(path)
@@ -84,53 +194,7 @@ def get_features_from_path (device, cgg_model, sample_ratio, path):
 			break
 
 		if counter % sample_ratio == 0:
-			
-			# Change to float type
-			frame = frame.astype(np.float32)
-
-			height, width, channels = frame.shape
-
-			# Reduce the size of the frame before cropping
-			fix_size = 256
-			cropped_size = 224
-
-			if height < width:
-				# dsize = ( # of columns, # of rows ) = ( width, height )
-				frame = cv2.resize(frame, dsize = (fix_size * width / height, fix_size), interpolation = cv2.INTER_AREA)
-			else:
-				frame = cv2.resize(frame, dsize = (fix_size, fix_size * height / width), interpolation = cv2.INTER_AREA)
-
-
-			# Subtract the mean
-			# and transfer to ( channels, height, width )
-			frame = process_frame(frame)
-
-
-			# Get size after reshape
-			_, height, width = frame.shape
-
-
-			# Prepare a numpy array to be passed to the CGG network
-			imgs = np.zeros( (10, 3, cropped_size, cropped_size) )
-
-			# oversample (4 corners, center, and their x-axis flips)
-
-			indices_height = [0, height - cropped_size]
-			indices_width = [0, width - cropped_size]
-			
-			center_height = (height - cropped_size) / 2
-			center_width = (width - cropped_size) / 2
-
-			curr = 0
-			for i in indices_height:
-				for j in indices_width:
-					imgs[curr, :, :, :] = frame[:, i: i + cropped_size, j: j + cropped_size]
-					curr += 1
-			imgs[4, :, :, :] = frame[:, center_height: center_height + cropped_size, center_width : center_width + cropped_size]
-
-			for i in xrange(5):
-				# Mirror image of the first five
-				imgs[i + 5, :, :, :] = imgs[i, ::-1 , :, :]
+			imgs = get_cropped_images_from_frame ( frame )
 
 			sequence_imgs.append(imgs)
 
@@ -155,27 +219,22 @@ def get_features_from_path (device, cgg_model, sample_ratio, path):
 	sequence_features = np.reshape(sequence_features, (sequence_features.shape[0] // 10, 10, -1))
 
 	# Average over 10 images
+	# np.array[ # of frames, 4096 ]
 	sequence_features = np.mean(sequence_features, axis = 1)
 
 	# print 'sequence_features shape = ', sequence_features.shape
-	
-
-	# if len ( sequence_features ) != 0:
-	# 	# Before   # of frames x np.array[ 3, cropped_size, cropped_size ]
-	# 	# After     np.array[ # of frames, 3, cropped_size, cropped_size ]
-	# 	sequence_features = np.stack ( sequence_features, axis = 0 )
 
 	print 'Run the data through the CNN network %.2f seconds' % (time.time() - t)
 
 	return sequence_features
 
-'''
-Parameters:
-device: Choose a device to process (GPU or CPU)
-cgg_model: 
 
-'''
 def process ( device, cgg_model, sample_ratio, feature_directory, downloaded_queue, processed_queue ):
+	"""
+	Parameters:
+	device: Choose a device to process (GPU or CPU)
+	cgg_model: 
+	"""
 	try:
 		while True:
 			try:
@@ -190,7 +249,7 @@ def process ( device, cgg_model, sample_ratio, feature_directory, downloaded_que
 				output_path = os.path.join(feature_directory, fv_filename)
 
 				t = time.time()
-				sequence_features = get_features_from_path ( device, cgg_model, sample_ratio, path )
+				sequence_features = get_features_from_video ( device, cgg_model, sample_ratio, path )
 
 				if sequence_features != None:
 					np.save(output_path, sequence_features)
